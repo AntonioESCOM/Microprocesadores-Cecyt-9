@@ -1,0 +1,182 @@
+MPLINK 4.30.01, Linker
+Linker Map File - Created Mon Mar 29 18:29:34 2021
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x000004
+                   .org_2       code   0x000004    program   0x00063c
+.config_2007_PRACTICA2 - TECLADO.O       code   0x002007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000001      
+                            0x000004    0x000321      
+                            0x002007    0x002007      
+            801 out of 8456 program addresses used, program memory utilization is 9%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+           BARRE_TECLADOD   0x000228    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+           BARRE_TECLADOH   0x000286    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+          BARRE_TECLADOHU   0x0002c0    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+           BARRE_TECLADOU   0x00019d    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+            CONTADOR_TIME   0x00006f    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+               ESP_INT1MS   0x00010d    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+             ESP_INT200MS   0x00030f    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+              ESP_INT40MS   0x000113    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+              ESP_INT96MS   0x000309    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 FUE_TEC0   0x0001f5    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                FUE_TEC0D   0x000267    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                FUE_TEC0H   0x0002b0    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+               FUE_TEC0HU   0x0002ee    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 FUE_TEC1   0x0001fa    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                FUE_TEC1D   0x00026c    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                FUE_TEC1H   0x0002b5    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+               FUE_TEC1HU   0x0002f3    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 FUE_TEC2   0x0001ff    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                FUE_TEC2D   0x000271    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                FUE_TEC2H   0x0002ba    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+               FUE_TEC2HU   0x0002f8    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 FUE_TEC3   0x000204    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                FUE_TEC3D   0x000276    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+               FUE_TEC3HU   0x0002fd    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 FUE_TEC4   0x000209    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                FUE_TEC4D   0x00027b    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 FUE_TEC5   0x00020e    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                FUE_TEC5D   0x000280    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 FUE_TEC6   0x000213    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 FUE_TEC7   0x000218    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 FUE_TEC8   0x00021d    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 FUE_TEC9   0x000222    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                  INI_LCD   0x00005d    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                LOOP_PRIN   0x000056    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+            MODIFICA_TIME   0x00012a    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                  MOSTRAR   0x0000c0    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+            MUESTRA_TECLA   0x000314    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 MUES_TEC   0x00031e    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                   NORMAL   0x000150    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                PARA_TIME   0x000126    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 PROG_INI   0x00002b    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                PROG_PRIN   0x000054    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+             PULSO_ENABLE   0x000107    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+            PULSO_ENABLE1   0x000303    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+           REGRESA_CUENTA   0x000123    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 RETARDO1   0x000308    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+              RETARDO_1MS   0x00010c    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                RET_200MS   0x00030e    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 RET_40MS   0x000112    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                  REVISAC   0x000118    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                  REVISAD   0x00018d    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+               RUTINA_INT   0x000019    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+            SAL_BARRETECD   0x000285    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+            SAL_BARRETECH   0x0002bf    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+           SAL_BARRETECHU   0x000302    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+            SAL_BARRETECU   0x000227    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                  SAL_INT   0x00000f    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+              SAL_MUESTEC   0x000321    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+               SAL_RUTEXT   0x000028    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+               SAL_RUTINT   0x000029    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+             SAL_VERIFICA   0x0000bf    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                  SIG_INT   0x000020    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 SIG_RAN2   0x0001b5    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 SIG_RAN3   0x0001cd    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                SIG_RAN3D   0x00023f    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 SIG_RAN4   0x0001e5    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                SIG_RAN4D   0x000257    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                SIG_RAN4H   0x0002a0    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+               SIG_RAN4HU   0x0002de    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+             TRABATE_LOCO   0x00019b    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                  UNIHOR9   0x000145    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                  VEC_INT   0x000004    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                VEC_RESET   0x000000    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 VERIFICA   0x0000a1    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                VEC_RESET   0x000000    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                  VEC_INT   0x000004    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                  SAL_INT   0x00000f    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+               RUTINA_INT   0x000019    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                  SIG_INT   0x000020    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+               SAL_RUTEXT   0x000028    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+               SAL_RUTINT   0x000029    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 PROG_INI   0x00002b    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                PROG_PRIN   0x000054    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                LOOP_PRIN   0x000056    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                  INI_LCD   0x00005d    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+            CONTADOR_TIME   0x00006f    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 VERIFICA   0x0000a1    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+             SAL_VERIFICA   0x0000bf    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                  MOSTRAR   0x0000c0    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+             PULSO_ENABLE   0x000107    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+              RETARDO_1MS   0x00010c    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+               ESP_INT1MS   0x00010d    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 RET_40MS   0x000112    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+              ESP_INT40MS   0x000113    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                  REVISAC   0x000118    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+           REGRESA_CUENTA   0x000123    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                PARA_TIME   0x000126    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+            MODIFICA_TIME   0x00012a    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                  UNIHOR9   0x000145    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                   NORMAL   0x000150    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                  REVISAD   0x00018d    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+             TRABATE_LOCO   0x00019b    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+           BARRE_TECLADOU   0x00019d    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 SIG_RAN2   0x0001b5    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 SIG_RAN3   0x0001cd    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 SIG_RAN4   0x0001e5    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 FUE_TEC0   0x0001f5    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 FUE_TEC1   0x0001fa    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 FUE_TEC2   0x0001ff    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 FUE_TEC3   0x000204    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 FUE_TEC4   0x000209    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 FUE_TEC5   0x00020e    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 FUE_TEC6   0x000213    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 FUE_TEC7   0x000218    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 FUE_TEC8   0x00021d    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 FUE_TEC9   0x000222    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+            SAL_BARRETECU   0x000227    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+           BARRE_TECLADOD   0x000228    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                SIG_RAN3D   0x00023f    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                SIG_RAN4D   0x000257    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                FUE_TEC0D   0x000267    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                FUE_TEC1D   0x00026c    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                FUE_TEC2D   0x000271    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                FUE_TEC3D   0x000276    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                FUE_TEC4D   0x00027b    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                FUE_TEC5D   0x000280    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+            SAL_BARRETECD   0x000285    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+           BARRE_TECLADOH   0x000286    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                SIG_RAN4H   0x0002a0    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                FUE_TEC0H   0x0002b0    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                FUE_TEC1H   0x0002b5    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                FUE_TEC2H   0x0002ba    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+            SAL_BARRETECH   0x0002bf    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+          BARRE_TECLADOHU   0x0002c0    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+               SIG_RAN4HU   0x0002de    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+               FUE_TEC0HU   0x0002ee    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+               FUE_TEC1HU   0x0002f3    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+               FUE_TEC2HU   0x0002f8    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+               FUE_TEC3HU   0x0002fd    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+           SAL_BARRETECHU   0x000302    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+            PULSO_ENABLE1   0x000303    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 RETARDO1   0x000308    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+              ESP_INT96MS   0x000309    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                RET_200MS   0x00030e    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+             ESP_INT200MS   0x00030f    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+            MUESTRA_TECLA   0x000314    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+                 MUES_TEC   0x00031e    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+              SAL_MUESTEC   0x000321    program     static C:\Users\anton\Downloads\PRACTICA2 - TECLADO.asm
+
+

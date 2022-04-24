@@ -1,0 +1,193 @@
+MPLINK 4.30.01, Linker
+Linker Map File - Created Mon Apr 05 15:07:21 2021
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000004
+                   .org_1       code   0x000004    program   0x00052e
+                   .cinit    romdata   0x002000    program   0x000004
+                  .config       code   0x002007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000001      
+                            0x000004    0x00029a      
+                            0x002000    0x002001      
+                            0x002007    0x002007      
+            668 out of 8453 program addresses used, program memory utilization is 7%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+            BARRE_TECLADO   0x0000cd    program     static C:\Users\anton\Downloads\practica 2(a).asm
+              CUENTA_TIME   0x00005b    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  DECHOR1   0x0001ec    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  DECHOR2   0x0001f1    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  DECSEGS   0x0000bc    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 DECSEGS1   0x000200    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  DEC_HOR   0x00017c    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  DEC_MIN   0x0001a0    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  DEC_SEG   0x0001c4    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                     DMIN   0x0000b2    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                    DMIN1   0x0001fb    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                ESCRITURA   0x00017b    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  ESP_INT   0x000224    program     static C:\Users\anton\Downloads\practica 2(a).asm
+               ESP_INT1MS   0x000290    program     static C:\Users\anton\Downloads\practica 2(a).asm
+              ESP_INT40MS   0x000296    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TEC0   0x00013c    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TEC1   0x000141    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TEC2   0x000146    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TEC3   0x00014b    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TEC4   0x000150    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TEC5   0x000155    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TEC6   0x00015a    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TEC7   0x00015f    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TEC8   0x000164    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TEC9   0x000169    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TECA   0x00016e    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TECB   0x000170    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TECC   0x000172    program     static C:\Users\anton\Downloads\practica 2(a).asm
+             FUE_TECCLEAR   0x000179    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TECD   0x000174    program     static C:\Users\anton\Downloads\practica 2(a).asm
+              FUE_TECGATO   0x000177    program     static C:\Users\anton\Downloads\practica 2(a).asm
+            HORA_CORRECTA   0x0001eb    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  INI_LCD   0x00026c    program     static C:\Users\anton\Downloads\practica 2(a).asm
+          INTERRUP_TIEMPO   0x0000a4    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 LIMPIADO   0x0000c6    program     static C:\Users\anton\Downloads\practica 2(a).asm
+             LIMPIAR_DECH   0x000205    program     static C:\Users\anton\Downloads\practica 2(a).asm
+             LIMPIAR_DMIN   0x000209    program     static C:\Users\anton\Downloads\practica 2(a).asm
+             LIMPIAR_DSEG   0x00020b    program     static C:\Users\anton\Downloads\practica 2(a).asm
+             LIMPIAR_UNIH   0x000207    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                    LOOP1   0x000281    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                   LOOP11   0x00028a    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                    LOOP2   0x00027f    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                   LOOP22   0x000288    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                LOOP_PRIN   0x000059    program     static C:\Users\anton\Downloads\practica 2(a).asm
+            MUESTRA_TECLA   0x000211    program     static C:\Users\anton\Downloads\practica 2(a).asm
+             MUESTRA_TIME   0x000224    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 MUES_TEC   0x00021b    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 PROG_INI   0x00002b    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                PROG_PRIN   0x000053    program     static C:\Users\anton\Downloads\practica 2(a).asm
+             PULSO_ENABLE   0x00021f    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 REINICIO   0x0000a8    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  RETARDO   0x00027d    program     static C:\Users\anton\Downloads\practica 2(a).asm
+              RETARDO_1MS   0x00028f    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                RETARDO_2   0x000286    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 RET_40MS   0x000295    program     static C:\Users\anton\Downloads\practica 2(a).asm
+               RUTINA_INT   0x000019    program     static C:\Users\anton\Downloads\practica 2(a).asm
+         SAL_BARRETECLADO   0x00017a    program     static C:\Users\anton\Downloads\practica 2(a).asm
+             SAL_CORRECTA   0x00020f    program     static C:\Users\anton\Downloads\practica 2(a).asm
+            SAL_ESCRITURA   0x0001ea    program     static C:\Users\anton\Downloads\practica 2(a).asm
+           SAL_INCORRECTA   0x00020d    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  SAL_INT   0x00000f    program     static C:\Users\anton\Downloads\practica 2(a).asm
+              SAL_MUESTEC   0x00021e    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                SAL_REINI   0x0000cc    program     static C:\Users\anton\Downloads\practica 2(a).asm
+               SAL_RUTEXT   0x000028    program     static C:\Users\anton\Downloads\practica 2(a).asm
+               SAL_RUTINT   0x000029    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  SIG_INT   0x000020    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 SIG_RAN1   0x0000d9    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 SIG_RAN2   0x0000e9    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 SIG_RAN3   0x000104    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 SIG_RAN4   0x00011f    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                   UNIHOR   0x0000ad    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  UNIHOR1   0x0001f6    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  UNIMINS   0x0000b7    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  UNISEGS   0x0000c1    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  UNI_HOR   0x00018e    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  UNI_MIN   0x0001b2    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  UNI_SEG   0x0001d6    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  VEC_INT   0x000004    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                VEC_RESET   0x000000    program     static C:\Users\anton\Downloads\practica 2(a).asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                VEC_RESET   0x000000    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  VEC_INT   0x000004    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  SAL_INT   0x00000f    program     static C:\Users\anton\Downloads\practica 2(a).asm
+               RUTINA_INT   0x000019    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  SIG_INT   0x000020    program     static C:\Users\anton\Downloads\practica 2(a).asm
+               SAL_RUTEXT   0x000028    program     static C:\Users\anton\Downloads\practica 2(a).asm
+               SAL_RUTINT   0x000029    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 PROG_INI   0x00002b    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                PROG_PRIN   0x000053    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                LOOP_PRIN   0x000059    program     static C:\Users\anton\Downloads\practica 2(a).asm
+              CUENTA_TIME   0x00005b    program     static C:\Users\anton\Downloads\practica 2(a).asm
+          INTERRUP_TIEMPO   0x0000a4    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 REINICIO   0x0000a8    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                   UNIHOR   0x0000ad    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                     DMIN   0x0000b2    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  UNIMINS   0x0000b7    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  DECSEGS   0x0000bc    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  UNISEGS   0x0000c1    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 LIMPIADO   0x0000c6    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                SAL_REINI   0x0000cc    program     static C:\Users\anton\Downloads\practica 2(a).asm
+            BARRE_TECLADO   0x0000cd    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 SIG_RAN1   0x0000d9    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 SIG_RAN2   0x0000e9    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 SIG_RAN3   0x000104    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 SIG_RAN4   0x00011f    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TEC0   0x00013c    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TEC1   0x000141    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TEC2   0x000146    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TEC3   0x00014b    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TEC4   0x000150    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TEC5   0x000155    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TEC6   0x00015a    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TEC7   0x00015f    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TEC8   0x000164    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TEC9   0x000169    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TECA   0x00016e    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TECB   0x000170    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TECC   0x000172    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 FUE_TECD   0x000174    program     static C:\Users\anton\Downloads\practica 2(a).asm
+              FUE_TECGATO   0x000177    program     static C:\Users\anton\Downloads\practica 2(a).asm
+             FUE_TECCLEAR   0x000179    program     static C:\Users\anton\Downloads\practica 2(a).asm
+         SAL_BARRETECLADO   0x00017a    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                ESCRITURA   0x00017b    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  DEC_HOR   0x00017c    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  UNI_HOR   0x00018e    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  DEC_MIN   0x0001a0    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  UNI_MIN   0x0001b2    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  DEC_SEG   0x0001c4    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  UNI_SEG   0x0001d6    program     static C:\Users\anton\Downloads\practica 2(a).asm
+            SAL_ESCRITURA   0x0001ea    program     static C:\Users\anton\Downloads\practica 2(a).asm
+            HORA_CORRECTA   0x0001eb    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  DECHOR1   0x0001ec    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  DECHOR2   0x0001f1    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  UNIHOR1   0x0001f6    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                    DMIN1   0x0001fb    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 DECSEGS1   0x000200    program     static C:\Users\anton\Downloads\practica 2(a).asm
+             LIMPIAR_DECH   0x000205    program     static C:\Users\anton\Downloads\practica 2(a).asm
+             LIMPIAR_UNIH   0x000207    program     static C:\Users\anton\Downloads\practica 2(a).asm
+             LIMPIAR_DMIN   0x000209    program     static C:\Users\anton\Downloads\practica 2(a).asm
+             LIMPIAR_DSEG   0x00020b    program     static C:\Users\anton\Downloads\practica 2(a).asm
+           SAL_INCORRECTA   0x00020d    program     static C:\Users\anton\Downloads\practica 2(a).asm
+             SAL_CORRECTA   0x00020f    program     static C:\Users\anton\Downloads\practica 2(a).asm
+            MUESTRA_TECLA   0x000211    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 MUES_TEC   0x00021b    program     static C:\Users\anton\Downloads\practica 2(a).asm
+              SAL_MUESTEC   0x00021e    program     static C:\Users\anton\Downloads\practica 2(a).asm
+             PULSO_ENABLE   0x00021f    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  ESP_INT   0x000224    program     static C:\Users\anton\Downloads\practica 2(a).asm
+             MUESTRA_TIME   0x000224    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  INI_LCD   0x00026c    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                  RETARDO   0x00027d    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                    LOOP2   0x00027f    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                    LOOP1   0x000281    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                RETARDO_2   0x000286    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                   LOOP22   0x000288    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                   LOOP11   0x00028a    program     static C:\Users\anton\Downloads\practica 2(a).asm
+              RETARDO_1MS   0x00028f    program     static C:\Users\anton\Downloads\practica 2(a).asm
+               ESP_INT1MS   0x000290    program     static C:\Users\anton\Downloads\practica 2(a).asm
+                 RET_40MS   0x000295    program     static C:\Users\anton\Downloads\practica 2(a).asm
+              ESP_INT40MS   0x000296    program     static C:\Users\anton\Downloads\practica 2(a).asm
+
+

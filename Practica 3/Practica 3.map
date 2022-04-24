@@ -1,0 +1,74 @@
+MPLINK 4.30.01, Linker
+Linker Map File - Created Sun Apr 18 15:30:45 2021
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x000004
+                   .org_2       code   0x000004    program   0x000208
+.config_2007_PRACTICA 3.O       code   0x002007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000001      
+                            0x000004    0x000107      
+                            0x002007    0x002007      
+            263 out of 8456 program addresses used, program memory utilization is 3%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                     LOOP   0x000049    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                 LOOP_2MS   0x000103    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                   LOOP_A   0x00009f    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+           LOOP_ANIMACION   0x0000c9    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                   LOOP_L   0x0000b8    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                   LOOP_M   0x00004a    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                 LOOP_MU1   0x0000ca    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                 LOOP_MU2   0x0000e3    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                   LOOP_O   0x000066    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                   LOOP_R   0x000078    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                 PROG_INI   0x00002c    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                PROG_PRIN   0x000048    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                  RETARDO   0x000102    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+               RUTINA_INT   0x000019    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                  SAL_INT   0x00000f    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+               SAL_RUTEXT   0x000029    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+               SAL_RUTINT   0x00002a    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                  SIG_INT   0x000020    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                  VEC_INT   0x000004    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                VEC_RESET   0x000000    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                VEC_RESET   0x000000    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                  VEC_INT   0x000004    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                  SAL_INT   0x00000f    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+               RUTINA_INT   0x000019    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                  SIG_INT   0x000020    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+               SAL_RUTEXT   0x000029    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+               SAL_RUTINT   0x00002a    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                 PROG_INI   0x00002c    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                PROG_PRIN   0x000048    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                     LOOP   0x000049    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                   LOOP_M   0x00004a    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                   LOOP_O   0x000066    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                   LOOP_R   0x000078    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                   LOOP_A   0x00009f    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                   LOOP_L   0x0000b8    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+           LOOP_ANIMACION   0x0000c9    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                 LOOP_MU1   0x0000ca    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                 LOOP_MU2   0x0000e3    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                  RETARDO   0x000102    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+                 LOOP_2MS   0x000103    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 3\Practica 3.asm
+
+

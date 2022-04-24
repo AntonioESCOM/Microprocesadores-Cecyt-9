@@ -1,0 +1,62 @@
+MPLINK 4.30.01, Linker
+Linker Map File - Created Wed Mar 24 12:28:37 2021
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x000004
+                   .org_2       code   0x000004    program   0x0000a8
+.config_2007_EXAMEN DE MICROS PRIMER PARCIAL.       code   0x002007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000001      
+                            0x000004    0x000057      
+                            0x002007    0x002007      
+            87 out of 8456 program addresses used, program memory utilization is 1%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                  ESP_INT   0x000053    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+                LOOP_PRIN   0x000045    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+                  PRENDE2   0x00004d    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+                 PROG_INI   0x00002d    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+                PROG_PRIN   0x000044    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+               RUTINA_INT   0x000019    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+                  SAL_INT   0x00000f    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+               SAL_RUTEXT   0x000028    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+               SAL_RUTINT   0x00002b    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+                  SEC_LED   0x00004b    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+                 SEC_LED2   0x000051    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+                  SIG_INT   0x000020    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+                  VEC_INT   0x000004    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+                VEC_RESET   0x000000    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                VEC_RESET   0x000000    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+                  VEC_INT   0x000004    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+                  SAL_INT   0x00000f    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+               RUTINA_INT   0x000019    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+                  SIG_INT   0x000020    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+               SAL_RUTEXT   0x000028    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+               SAL_RUTINT   0x00002b    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+                 PROG_INI   0x00002d    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+                PROG_PRIN   0x000044    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+                LOOP_PRIN   0x000045    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+                  SEC_LED   0x00004b    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+                  PRENDE2   0x00004d    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+                 SEC_LED2   0x000051    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+                  ESP_INT   0x000053    program     static C:\Users\anton\Desktop\Examen Primer parcial Olivares\Examen Importante\Examen de micros primer parcial.asm
+
+

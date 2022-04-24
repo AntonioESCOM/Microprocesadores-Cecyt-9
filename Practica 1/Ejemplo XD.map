@@ -1,0 +1,66 @@
+MPLINK 4.30.01, Linker
+Linker Map File - Created Wed Mar 17 22:50:26 2021
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x000004
+                   .org_2       code   0x000004    program   0x0000f4
+.config_2007_EJEMPLO XD.O       code   0x002007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000001      
+                            0x000004    0x00007d      
+                            0x002007    0x002007      
+            125 out of 8456 program addresses used, program memory utilization is 1%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                  INI_LCD   0x00005c    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+                 LOOP_1MS   0x000073    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+                LOOP_40MS   0x000079    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+                 PROG_INI   0x00002b    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+                PROG_PRIN   0x000050    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+             PULSO_ENABLE   0x00006e    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+              RETARDO_1MS   0x000072    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+             RETARDO_40MS   0x000078    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+               RUTINA_INT   0x000019    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+                  SAL_INT   0x00000f    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+               SAL_RUTEXT   0x000028    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+               SAL_RUTINT   0x000029    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+                  SIG_INT   0x000020    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+            TRABATE_LUCAS   0x00005a    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+                  VEC_INT   0x000004    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+                VEC_RESET   0x000000    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                VEC_RESET   0x000000    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+                  VEC_INT   0x000004    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+                  SAL_INT   0x00000f    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+               RUTINA_INT   0x000019    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+                  SIG_INT   0x000020    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+               SAL_RUTEXT   0x000028    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+               SAL_RUTINT   0x000029    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+                 PROG_INI   0x00002b    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+                PROG_PRIN   0x000050    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+            TRABATE_LUCAS   0x00005a    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+                  INI_LCD   0x00005c    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+             PULSO_ENABLE   0x00006e    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+              RETARDO_1MS   0x000072    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+                 LOOP_1MS   0x000073    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+             RETARDO_40MS   0x000078    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+                LOOP_40MS   0x000079    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Ejemplo XD.asm
+
+

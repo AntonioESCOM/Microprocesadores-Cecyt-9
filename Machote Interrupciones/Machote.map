@@ -1,0 +1,60 @@
+MPLINK 4.30.01, Linker
+Linker Map File - Created Fri Mar 12 07:36:56 2021
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x000004
+                   .org_2       code   0x000004    program   0x000094
+   .config_2007_MACHOTE.O       code   0x002007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000001      
+                            0x000004    0x00004d      
+                            0x002007    0x002007      
+            77 out of 8456 program addresses used, program memory utilization is 0%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                 ENTRADA.   0x000000    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Machote.asm
+                  ESP_INT   0x000049    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Machote.asm
+                LOOP_PRIN   0x000042    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Machote.asm
+                 PROG_INI   0x00002b    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Machote.asm
+                PROG_PRIN   0x000041    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Machote.asm
+               RUTINA_INT   0x000019    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Machote.asm
+                  SAL_INT   0x00000f    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Machote.asm
+               SAL_RUTEXT   0x000028    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Machote.asm
+               SAL_RUTINT   0x000029    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Machote.asm
+                  SEC_LED   0x000047    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Machote.asm
+                  SIG_INT   0x000020    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Machote.asm
+                  VEC_INT   0x000004    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Machote.asm
+                VEC_RESET   0x000000    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Machote.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                 ENTRADA.   0x000000    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Machote.asm
+                VEC_RESET   0x000000    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Machote.asm
+                  VEC_INT   0x000004    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Machote.asm
+                  SAL_INT   0x00000f    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Machote.asm
+               RUTINA_INT   0x000019    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Machote.asm
+                  SIG_INT   0x000020    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Machote.asm
+               SAL_RUTEXT   0x000028    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Machote.asm
+               SAL_RUTINT   0x000029    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Machote.asm
+                 PROG_INI   0x00002b    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Machote.asm
+                PROG_PRIN   0x000041    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Machote.asm
+                LOOP_PRIN   0x000042    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Machote.asm
+                  SEC_LED   0x000047    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Machote.asm
+                  ESP_INT   0x000049    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Machote Interrupciones\Machote.asm
+
+

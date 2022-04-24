@@ -1,0 +1,2004 @@
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;INSTITUTO POLITECNICO NACIONAL
+                      00002 ;CECYT 9 JUAN DE DIOS BATIZ
+                      00003 ;
+                      00004 ;PRACTICA 2 MULTIPLEXADO “MANEJO DE UN TECLADO MATRICIAL DE 4X4”.
+                      00005 ;(ACTUALIZACIÓN DEL TIEMPO).
+                      00006 ;
+                      00007 ;GRUPO:6IM2
+                      00008 ;
+                      00009 ;INTEGRANTE
+                      00010 ;Morales Martínez José Antonio
+                      00011 ;
+                      00012 ;El programa ejecutara un reloj en tiempo real mediante interrupciones un reloj en tiempo real
+                      00013 ;con posible actualizacion por medio de un teclado matricial haciendo uso de la tecla c para entrar 
+                      00014 ;y D para salir
+                      00015 ;----------------------------------------------------------------------------------------------------
+                      00016 
+Warning[205]: Found directive in column 1. (LIST)
+                      00017 LIST P=16F877A; // Directiva utilizada para definir el microcontrolador a utilizar
+                      00018 
+                      00019 
+                      00020 #INCLUDE "c:\program files (x86)\microchip\mpasm suite\p16f877a.inc"; 
+                      00001         LIST
+                      00002 ; P16F877A.INC  Standard Header File, Version 1.00    Microchip Technology, Inc.
+                      00400         LIST
+                      00021 
+                      00022 
+                      00023 ;Bits de configuracion
+Warning[205]: Found directive in column 1. (__CONFIG)
+2007   3F31           00024 __CONFIG _XT_OSC & _WDT_OFF & _PWRTE_ON & _BODEN_OFF & _LVP_OFF & _CP_OFF; ALL
+                      00025 
+                      00026 ;------------------------------------------------------------------------------------------------------
+                      00027 ;fosc = 4 Mhz.
+                      00028 ;Ciclo de trabajo del PIC = (1/fosc)*4 = 1us.
+                      00029 ;t int =(256-R)*(P)*((1/4000000)*4) = 1 ms ;// Tiempo de interrupción.
+                      00030 ;R=131, p=8.
+                      00031 ;frec int = 1/ t int = 1Khz.
+                      00032 ;------------------------------------------------------------------------------------------------------
+                      00033 ;
+                      00034 ;Registros de proposito general Banco 0 de Memoria RAM.
+                      00035 ;
+                      00036 ;Registros propios de estructura del programa
+                      00037 
+                      00038 
+  00000023            00039 CTA_UNISEG              EQU                     0X23;   //Registro que se encarga de llevar la cuenta de
+                             las unidades de segundo dentro de la subrutina de muestra_tiempo
+  00000024            00040 CTA_DECSEG              EQU                     0X24;   //Registro que se encarga de llevar la cuenta de
+                             las decenas de segundo dentro de la subrutina de muestra_tiempo
+  00000025            00041 CTA_UNIMIN              EQU                     0X25;   //Registro que se encarga de llevar la cuenta de
+                             las unidades de minuto dentro de la subrutina de muestra_tiempo
+  00000026            00042 CTA_DECMIN      EQU                     0X26;   //Registro que se encarga de llevar la cuenta de las dec
+                            enas de minuto dentro de la subrutina de muestra_tiempo
+  00000027            00043 CTA_UNIHOR              EQU                     0X27;   //Registro que se encarga de llevar la cuenta de
+                             las unidades de hora dentro de la subrutina de muestra_tiempo
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+  00000028            00044 CTA_DECHOR      EQU                     0X28;   //Registro que se encarga de llevar la cuenta de las dec
+                            enas de hora dentro de la subrutina de muestra_tiempo
+                      00045 
+  00000029            00046 RES_W               EQU                 0X29;   //Registro de resplado de la variable W en la subruitna 
+                            de interrupción 
+  00000030            00047 RES_STATUS              EQU                     0X30;   //Registro de resplado de la variable status en 
+                            la subruitna de interrupción
+  00000031            00048 RES_PCLATH              EQU                     0X31;   //Registro de resplado de la variable pclath en 
+                            la subruitna de interrupción
+  00000032            00049 RES_FSR                 EQU                     0X32;   //Registro de resplado de la variable fsr en la 
+                            subruitna de interrupción
+  00000033            00050 PRESC_1                 EQU                     0X33;   //T int= T interrupcion(0.001s)*presc_1 multipli
+                            ca por un escalar al tiempo de interrupcion base
+  00000034            00051 PRESC_2                 EQU                     0X34;   //T int= T interrupcion(0.001s)*presc_1*presc_2 
+                            multiplica por un escalar al tiempo de interrupcion base 
+  00000035            00052 BANDERAS                EQU                     0X35;   //Registro en donde se definen bits banderas (ba
+                            ndera_c, bandera_D, bandera_clear)
+  00000036            00053 CONT_MILIS              EQU                     0X36;   //Registro que lleva la cuenta de las unidades d
+                            e milisegundos (0-255)
+  00000039            00054 BUFFER5                 EQU                     0X39;   //Dirección de la memoria RAM para el buffer 5.
+  00000040            00055 BUFFER4                 EQU                     0X40;   //Dirección de la memoria RAM para el buffer 4.
+  00000041            00056 BUFFER3                 EQU                     0X41;   //Dirección de la memoria RAM para el buffer 3.
+  00000042            00057 BUFFER2                 EQU                     0X42;   //Dirección de la memoria RAM para el buffer 2.
+  00000043            00058 BUFFER1                 EQU                     0X43;   //Dirección de la memoria RAM para el buffer 1.
+  00000044            00059 BUFFER0                 EQU                     0X44;   //Dirección de la memoria RAM para el buffer 0.
+  00000045            00060 VAR_TECLADO     EQU                     0X45;   //Guardar el codigo de la tecla activa sobre el puerto B
+                            .
+  00000046            00061 VAR_TECOPRI             EQU                     0X46;   //Regresar el codigo ASCII de la tecla oprimida.
+  00000047            00062 VAR_TECBIN              EQU             0X47;   //Guarda el calor de la tecla oprimida en binario.
+                      00063 
+                      00064 
+                      00065 
+                      00066 ;-----------------------------------------------------------------------------------------------------
+                      00067 ;Constantes
+                      00068 
+  000000F0            00069 NO_HAYTECLA             EQU             0XF0;   //Esta constante desctiva todos los reglones y no habrá 
+                            tecla en la entrada
+                      00070 
+  000000E0            00071 TEC_1                   EQU                     0XE0;   //Esta costante representa a la tecla "1" 
+  000000D0            00072 TEC_2                   EQU                     0XD0;   //Esta costante representa a la tecla "2"
+  000000B0            00073 TEC_3                   EQU                     0XB0;   //Esta costante representa a la tecla "3"
+  00000070            00074 TEC_A                   EQU                     0X70;   //Esta costante representa a la tecla "A"
+  000000E0            00075 TEC_4                   EQU                     0XE0;   //Esta costante representa a la tecla "4"
+  000000D0            00076 TEC_5                   EQU                     0XD0;   //Esta costante representa a la tecla "5"
+  000000B0            00077 TEC_6                   EQU                     0XB0;   //Esta costante representa a la tecla "6"
+  00000070            00078 TEC_B                   EQU                     0X70;   //Esta costante representa a la tecla "B"
+  000000E0            00079 TEC_7                   EQU                     0XE0;   //Esta costante representa a la tecla "7"
+  000000D0            00080 TEC_8                   EQU                     0XD0;   //Esta costante representa a la tecla "8"
+  000000B0            00081 TEC_9                   EQU                     0XB0;   //Esta costante representa a la tecla "9"
+  00000070            00082 TEC_C                   EQU                     0X70;   //Esta costante representa a la tecla "C"
+  000000E0            00083 TEC_CLEAR               EQU                     0XE0;   //Esta costante representa a la tecla "*"
+  000000D0            00084 TEC_0                   EQU                     0XD0;   //Esta costante representa a la tecla "0"
+  000000B0            00085 TEC_GATO                EQU                     0XB0;   //Esta costante representa a la tecla "#"
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+  00000070            00086 TEC_D                   EQU                     0X70;   //Esta costante representa a la tecla "D"
+                      00087 
+                      00088 ;-----------------------------------------------------------------------------------------------------
+                      00089 
+                      00090 ; banderas del registro banderas.
+  00000000            00091 BAN_INT                 EQU     .0;     //Bit bandera de retardo 1s
+  00000001            00092 BANDERA_D               EQU     .1; //Bit bandera de salida de la subrutina configtime
+  00000002            00093 BANDERA_TECLADO         EQU     .2; //Bit bandera de combrobacion de la variable introducida mediante te
+                            clado
+  00000003            00094 BANDERA_CLEAR               EQU     .3; //Bit bandera de * para borrar LCD
+  00000004            00095 SIN_BD4                 EQU     .4; //Sin Uso bd4.
+  00000005            00096 SIN_BD5                 EQU     .5;     //Sin Uso bd5. 
+  00000006            00097 SIN_BD6                 EQU     .6; //Sin Uso bd6.
+  00000007            00098 SIN_BD7                 EQU     .7; //Sin Uso bd7.
+                      00099 ;-----------------------------------------------------------------------------------------------------
+                      00100 ;Asignacion de los bits de los puertos de I/O.
+                      00101 ;Puerto A.
+  00000000            00102 RS_LCD                  EQU                     .0; // Señal de control de Comando o dato en la LCD
+  00000001            00103 ENABLE_LCD              EQU                     .1; // Señal de ingreso de información a la LCD
+  00000002            00104 SIN_USORA2              EQU                     .2; // Sin Uso RA2.
+  00000003            00105 SIN_USORA3              EQU                     .3; // Sin Uso RA3
+  00000004            00106 SIN_USORA4              EQU                     .4; // Sin Uso RA4.
+  00000005            00107 SIN_USORA5              EQU                     .5; // Sin Uso RA5.
+                      00108 
+  0000003C            00109 PROGA                   EQU     B'111100'; // Programacion Inicial del Puerto A.
+                      00110 
+                      00111 ;Puerto B.
+  00000000            00112 ACT_REN1                EQU             .0; // Pin de salida para activar el reglon de 1 del teclado.
+  00000001            00113 ACT_REN2                EQU             .1; // Pin de salida para activar el reglon de 2 del teclado.
+  00000002            00114 ACT_REN3                EQU             .2; // Pin de salida para activar el reglon de 3 del teclado.
+  00000003            00115 ACT_REN4                EQU             .3; // Pin de salida para activar el reglon de 4 del teclado.
+  00000004            00116 COL_1                   EQU             .4; // Pin de entrada para leer el codigo de la tecla oprimida.
+  00000005            00117 COL_2                   EQU             .5; // Pin de entrada para leer el codigo de la tecla oprimida.
+  00000006            00118 COL_3                   EQU             .6; // Pin de entrada para leer el codigo de la tecla oprimida.
+  00000007            00119 COL_4                           EQU             .7; // Pin de entrada para leer el codigo de la tecla op
+                            rimida.
+                      00120                 
+  000000F0            00121 PROGB                   EQU     B'11110000'; // Programacion Inicial del Puerto B.
+                      00122 
+                      00123 ;Puerto C.
+  00000000            00124 D0_LCD                  EQU                     .0; // Bit D0 del bus de datos de la LCD.
+  00000001            00125 D1_LCD                  EQU                     .1; // Bit D1 del bus de datos de la LCD.
+  00000002            00126 D2_LCD                  EQU                     .2; // Bit D2 del bus de datos de la LCD.
+  00000003            00127 D3_LCD                  EQU                     .3; // Bit D3 del bus de datos de la LCD.
+  00000004            00128 D4_LCD                  EQU                     .4; // Bit D4 del bus de datos de la LCD.
+  00000005            00129 D5_LCD                  EQU                     .5; // Bit D5 del bus de datos de la LCD.
+  00000006            00130 D6_LCD                  EQU                     .6; // Bit D6 del bus de datos de la LCD.
+  00000007            00131 D7_LCD                  EQU                     .7; // Bit D7 del bus de datos de la LCD.
+                      00132 
+  00000000            00133 PROGC                   EQU     B'00000000'; // Programacion Inicial del Puerto C como Entrada.
+                      00134 
+                      00135 ;Puerto D.
+  00000000            00136 SIN_USORD0              EQU                     .0; // Sin Uso RD0.
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+  00000001            00137 SIN_USORD1              EQU                     .1; // Sin Uso RD1.
+  00000002            00138 SIN_USORD2              EQU                     .2; // Sin Uso RD2.
+  00000003            00139 SIN_USORD3              EQU                     .3; // Sin Uso RD3.
+  00000004            00140 SIN_USORD4              EQU                     .4; // Sin Uso RD4.
+  00000005            00141 SIN_USORD5              EQU                     .5; // Sin Uso RD5.
+  00000006            00142 SIN_USORD6              EQU                     .6; // Sin Uso RD6.
+  00000007            00143 SIN_USORD7              EQU                     .7; // Sin Uso RD7.
+                      00144 
+  000000FF            00145 PROGD                   EQU     B'11111111'; // Programacion Inicial del Puerto D como entradas.
+                      00146 
+                      00147 ;Puerto E.
+  00000000            00148 SIN_USORE0              EQU                     .0; // Sin Uso RE0.
+  00000001            00149 SIN_USORE1              EQU                     .1; // Sin Uso RE1.
+  00000002            00150 SIN_USORE2              EQU                     .2; // Sin Uso RE2.
+                      00151 
+  00000007            00152 PROGE                   EQU     B'111'; // Programacion inicial del Puerto E.
+                      00153 ;-------------------------------------------------------------------------------------------------------
+                            --
+                      00154                                 ;================
+                      00155                                 ;==Vector Reset==
+                      00156                                 ;================
+0000                  00157                                 ORG 0X0000;                             // dirección de inicio de la mem
+                            oria donde el IDE comenzara a ensamblar
+0000   018A           00158 VEC_RESET               CLRF PCLATH;                    // Limpia el registro PCLATH
+0001   2855           00159                                 GOTO PROG_PRIN;                 // ve para la etiqueta prog_ini
+                      00160 ;-------------------------------------------------------------------------------------------------------
+                            --
+                      00161                         ;=============================
+                      00162                         ;== Subrutina de Interrupciones  ==
+                      00163                         ;=============================
+0004                  00164                  ORG 0004H;                     //direccion de memoria donde se encuentra la subrtuina d
+                            e servicio de interrupcion  
+0004   00A9           00165 VEC_INT                  MOVWF RES_W;                   //Respaldar el estado del registro w
+0005   0803           00166                  MOVF STATUS,W;                 //Mover el contenido del registro status a el registro d
+                            e trabajo
+0006   00B0           00167                  MOVWF RES_STATUS;              //Respaldar las banderas de la alu
+0007   0183           00168                  CLRF STATUS;                   //Limpia el registro STATUS
+0008   080A           00169                  MOVF PCLATH,W;                 //Mover el contenido del registro res_pclath a el regist
+                            ro de trabajo
+0009   00B1           00170                  MOVWF RES_PCLATH;              //Respaldar el estado del registro pclath               
+000A   018A           00171                  CLRF PCLATH;                   //Limpia el registro pclath
+000B   0804           00172                  MOVF FSR,W;                    //Mover el contenido del registro res_fsr a el registro 
+                            de trabajo
+000C   00B2           00173                  MOVWF RES_FSR;                 //Respaldar el estado del registro fsr  
+                      00174                          
+000D   190B           00175                  BTFSC INTCON,T0IF;             //Si el bit t0if del registro intcon es igual a 0 salta
+000E   2019           00176                  CALL RUTINA_INT;               //LLamada a la subrutina de interrupciones
+                      00177                         
+000F   3083           00178 SAL_INT                  MOVLW .131;                    //Mover la constante 131 al registro de trabajo
+0010   0081           00179                  MOVWF TMR0;                    //Mover el contenido del registro de trabajo al registro
+                             tmr0
+0011   0832           00180                  MOVF RES_FSR,W;                //Mover el contenido del respaldo res_fsr a el registro 
+                            de trabajo
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0012   0084           00181                  MOVWF FSR;                             //Mover el contenido del registro de trabajo al 
+                            registro far
+0013   0831           00182                  MOVF RES_PCLATH,W;             //Mover el contenido del respaldo res_pclath a el regist
+                            ro de trabajo
+0014   008A           00183                  MOVWF PCLATH;                  //Mover el contenido del registro de trabajo al registro
+                             pclath
+0015   0830           00184                  MOVF RES_STATUS,W;             //Mover el contenido del respaldo res_status a el regist
+                            ro de trabajo
+0016   0083           00185                  MOVWF STATUS;                  //Mover el contenido del registro de trabajo al registro
+                             status
+0017   0829           00186                  MOVF RES_W,W;                  //Mover el contenido del respaldo res_w a el registro de
+                             trabajo
+                      00187                         
+0018   0009           00188                  RETFIE;                                //Regresar al programa principal
+                      00189 ;--------------------------------------------------------------------------------------------------
+                      00190 
+                      00191 
+                      00192                         ;=============================
+                      00193                         ;== Subrutina de Interrupciones  ==
+                      00194                         ;=============================
+0019   0AB6           00195 RUTINA_INT      INCF CONT_MILIS,F;              //Incrementa la variable cont milis en una unidad y guar
+                            da en el mismo registro
+001A   0AB3           00196                 INCF PRESC_1,F;                 //Incrementa la variable presc 1 en una unidad y guarda 
+                            en el mismo registro
+                      00197                         
+001B   3064           00198                 MOVLW .100;                             //Mover la constante 100 al registro de trabajo
+001C   0633           00199                 XORWF PRESC_1,W;                //XOR entre registro presc 1 y el registro de trabajo
+001D   1903           00200                 BTFSC STATUS,Z;                 //Si el bit z del registro status es igual a 0 salta
+001E   2820           00201                 GOTO SIG_INT;                   //Ve para la etiqueta sig_int
+001F   2829           00202                 GOTO SAL_RUTINT;                //Ve para la etiqueta sal_rutint
+                      00203 
+0020   01B3           00204 SIG_INT    CLRF PRESC_1;                        //Limpia el registro presc 1
+0021   0AB4           00205                 INCF PRESC_2,F;                 //Incrementa la variable presc 2 y guarda en el mismo re
+                            gistro
+0022   300A           00206                 MOVLW .10;                              //Mover la constante 10 al registro de trabajo
+0023   0634           00207                 XORWF PRESC_2,W;                //XOR entre registro presc 2 y el registro de trabajo
+0024   1D03           00208                 BTFSS STATUS,Z;                 //Si el bit z del registro status es igual a 1 salta
+0025   2829           00209                 GOTO SAL_RUTINT;                //Ve para la etiqueta sal_rutint
+0026   01B3           00210                 CLRF PRESC_1;                   //Limpia el registro presc 1
+0027   01B4           00211                 CLRF PRESC_2;                   //Limpia el registro presc 2
+                      00212                         
+0028   1435           00213 SAL_RUTEXT      BSF BANDERAS,BAN_INT;   //Pon a 1 el bit ban int del registro banderas(retardo 1s)
+                      00214                                  
+0029   110B           00215 SAL_RUTINT      BCF INTCON,T0IF;                //Pon a 0 el bit bandera t0if puesto a 1 por la interrup
+                            cion
+002A   0008           00216                 RETURN;                                 //Regresar al programa principal
+                      00217 ;-------------------------------------------------------------------------------------------------------
+                            --      
+                      00218 
+                      00219 
+                      00220                                 ;=======================
+                      00221                                 ;==Subrutina de inicio==
+                      00222                                 ;=======================
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+002B   1683           00223 PROG_INI                BSF STATUS,RP0;                 //Coloca al programa  en el bco. 1 de ram
+002C   3002           00224                                 MOVLW 0X02;                             // Mueve la constante 0X02 al re
+                            gistro w
+002D   0081           00225                                 MOVWF OPTION_REG ^0X80; // Configura el preescalador y activa los pull-u
+                            p
+002E   303C           00226                                 MOVLW PROGA;                    // Mueve el contenido de w a el registro
+                             proga
+002F   0085           00227                                 MOVWF TRISA ^0X80;              // Mueve la constante 0X80 al registro T
+                            RISA
+0030   30F0           00228                                 MOVLW PROGB;                    // Mueve el contenido de w a el registro
+                             progb
+0031   0086           00229                                 MOVWF TRISB ^0X80;              // Mueve la constante 0X80 al registro T
+                            RISB
+0032   3000           00230                                 MOVLW PROGC;                    // Mueve el contenido de w a el registro
+                             progc
+0033   0087           00231                                 MOVWF TRISC ^0X80;              // Mueve la constante 0X80 al registro T
+                            RISC
+0034   30FF           00232                                 MOVLW PROGD;                    // Mueve el contenido de w a el registro
+                             progd
+0035   0088           00233                                 MOVWF TRISD ^0X80;              // Mueve la constante 0X80 al registro T
+                            RISD
+0036   3007           00234                                 MOVLW PROGE;                    // Mueve el contenido de w a el registro
+                             proge
+0037   0089           00235                                 MOVWF TRISE ^0X80;              // Mueve la constante 0X80 al registro T
+                            RISE
+0038   3006           00236                                 MOVLW 0X06;                             // Mueve la constante 0X06 al re
+                            gistro w
+0039   009F           00237                                 MOVWF ADCON1 ^0X80;             // Mueve la constante 0X80 al registro A
+                            DCON1
+003A   1283           00238                                 BCF     STATUS,RP0;                     //regresa al bco. 0 de ram
+                      00239 
+                      00240                         
+003B   30A0           00241                 MOVLW 0XA0;                             // Habilita la interrupcion del TMR0, Las global
+                            es y borra las banderas de interrupción 
+003C   008B           00242                 MOVWF INTCON;                   //Mover el contenido del registro de trabajo al registro
+                             intcon
+003D   3083           00243                 MOVLW .131;                             //Mover la constante 131 al registro de trabajo
+003E   0081           00244                 MOVWF TMR0;                             //Carga a tmr0 la constante 131 desde donde inic
+                            iará la cuenta
+                      00245 
+003F   0187           00246                                 CLRF PORTC;                             //Limpia el registro portc
+0040   3003           00247                                 MOVLW 0X03;                             //Inicializa el pin Enable y RS 
+                            a 1 logico
+0041   0085           00248                                 MOVWF PORTA;                    //Mover el contenido del registro de tra
+                            bajo al registro porta
+                      00249                                 
+0042   01A9           00250                                 CLRF RES_W;                             //Limpia el registro res w
+0043   01B0           00251                                 CLRF RES_STATUS;                //Limpia el registro res status
+0044   01B1           00252                                 CLRF RES_PCLATH;                //Limpia el registro res pclath
+0045   01B2           00253                                 CLRF RES_FSR;                   //Limpia el registro res fsr
+0046   01B3           00254                                 CLRF PRESC_1;                   //Limpia el registro presc 1
+0047   01B4           00255                                 CLRF PRESC_2;                   //Limpia el registro presc 2
+0048   01B5           00256                 CLRF BANDERAS;                  //Limpia el registro banderas
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE  7
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0049   01A3           00257                                 CLRF CTA_UNISEG;                // Inicializa la cuenta de unidades de s
+                            egundo a 0 
+004A   01A4           00258                                 CLRF CTA_DECSEG;                // Inicializa la cuenta de decenas de se
+                            gundo a 0 
+004B   01A5           00259                                 CLRF CTA_UNIMIN;                // Inicializa la cuenta de unidades de m
+                            inutos a 0 
+004C   01A6           00260                                 CLRF CTA_DECMIN;                // Inicializa la cuenta de decenas de mi
+                            nutos a 0 
+004D   01A7           00261                                 CLRF CTA_UNIHOR;                // Inicializa la cuenta de unidades de h
+                            ora a 0
+004E   01A8           00262                                 CLRF CTA_DECHOR;                // Inicializa la cuenta de decenas de ho
+                            ra a 0
+004F   01C6           00263                                 CLRF VAR_TECOPRI;               //Limpia el registro Var_tecopri
+0050   01C7           00264                                 CLRF VAR_TECBIN;                //Limpia el registro Var_tecbin
+0051   01C5           00265                                 CLRF VAR_TECLADO;               //Limpia el registro Var_teclado
+                      00266 
+0052   300F           00267                                 MOVLW 0X0F;                             //Inicializa el teclado como No 
+                            hay tecla
+0053   0086           00268                                 MOVWF PORTB;                    // Mueve el contenido de W al puerto B
+0054   0008           00269                                 RETURN;                                 //Regresa de la subrutina de ini
+                            cializacion
+                      00270 ;-------------------------------------------------------------------------------------------------------
+                            ---
+                      00271 
+                      00272                                 ;======================
+                      00273                                 ;==Programa Principal==
+                      00274                                 ;======================
+0055   202B           00275 PROG_PRIN               CALL PROG_INI;                  //Llamada a la subrutina de inicio 
+0056   2256           00276                                 CALL INI_LCD;                   //Llama a la subrutina de inicializacion
+                             del LCD
+                      00277                         
+                      00278 
+0057   205A           00279 LOOP_PRIN                       CALL CUENTA_TIME;               //Llama a la subrutina de cuenta time, (
+                            reloj en tiempo real)
+0058   21B8           00280                                 CALL CONFIG_TIME;               //Llama a la subrutina de actualizacion 
+                            del tiempo
+0059   2857           00281                                 GOTO LOOP_PRIN;                 //Crea el loop principal
+                      00282 ;-------------------------------------------------------------------------------------------------------
+                            --------------------
+                      00283 
+                      00284                         ;================================================
+                      00285                         ;==Subrutina de cuenta tiempo ==================
+                      00286                         ;================================================
+                      00287 
+005A                  00288 CUENTA_TIME             
+005A   1586           00289                                 BSF PORTB,ACT_REN4;     //Desactiva el reglon 4 del teclado.
+005B   1106           00290                                 BCF PORTB,ACT_REN3;     //Activa el reglon 3 del teclado.
+005C   1486           00291                                 BSF PORTB,ACT_REN2; //Desactiva el reglon 2 del teclado.
+005D   1406           00292                                 BSF PORTB,ACT_REN1;     //Desactiva el reglon 1 del teclado.
+005E   1F86           00293                                 BTFSS PORTB,COL_4;      //Realiza un chequeo de la tecla C.  
+005F   28A2           00294                                 GOTO SAL_LOCO;          //Sale de la subrutina.
+                      00295 
+0060   20A3           00296                                 CALL RECTIFICA;         //Llamada a la subrutina que rectifica que no se
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE  8
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                            an las 24hras si lo son reinicia
+                      00297 
+0061   0823           00298                                 MOVF CTA_UNISEG,W;      //Mover el contenido del registro cta unidades d
+                            e segundo a el registro de trabajo 
+0062   00C4           00299                                 MOVWF BUFFER0;          //Mover el contenido del registro de trabajo al 
+                            buffer 0
+                      00300 
+0063   0824           00301                                 MOVF CTA_DECSEG,W;      //Mover el contenido del registro cta decenas de
+                             segundo a el registro de trabajo
+0064   00C3           00302                                 MOVWF BUFFER1;          //Mover el contenido del registro de trabajo al 
+                            buffer 
+                      00303 
+0065   0825           00304                                 MOVF CTA_UNIMIN,W;      //Mover el contenido del registro cta unidades d
+                            e minuto a el registro de trabajo
+0066   00C2           00305                                 MOVWF BUFFER2;          //Mover el contenido del registro de trabajo al 
+                            buffer 2
+                      00306 
+0067   0826           00307                                 MOVF CTA_DECMIN,W;      //Mover el contenido del registro cta decenas de
+                             minuto a el registro de trabajo
+0068   00C1           00308                                 MOVWF BUFFER3;          //Mover el contenido del registro de trabajo al 
+                            buffer 3
+                      00309 
+0069   0827           00310                                 MOVF CTA_UNIHOR,W;      //Mover el contenido del registro cta unidades d
+                            e hora a el registro de trabajo
+006A   00C0           00311                                 MOVWF BUFFER4;          //Mover el contenido del registro de trabajo al 
+                            buffer 4
+                      00312 
+006B   0828           00313                                 MOVF CTA_DECHOR,W;      //Mover el contenido del registro cta decenas de
+                             hora a el registro de trabaj
+006C   00B9           00314                                 MOVWF BUFFER5;          //Mover el contenido del registro de trabajo al 
+                            buffer 5
+                      00315                                 
+006D   20B2           00316                                 CALL MUESTRA_TIME;      //Llamada a la subrutina de muestra mensaje 
+                      00317 
+                      00318 ;-------------------------------------------------------------------------------------------------------
+                            ---
+                      00319                         
+006E   0AA3           00320                         INCF CTA_UNISEG,F;              //Incrementa la variable cta unidades de segundo
+                             y guarada en el mismo registro
+006F   300A           00321                         MOVLW .10;                              //Mueve la constante 10 al registro de t
+                            rabajo 
+0070   0223           00322                         SUBWF CTA_UNISEG,W;             //Resta la variable cta unidades de segundo meno
+                            s el contenido del registro de trabajo guarada en w
+0071   1D03           00323                         BTFSS STATUS,Z;                 //Si la bandera Z esta en 1 salta, si no ejecuta
+                             la siguiente instruccion 
+0072   285A           00324                         GOTO CUENTA_TIME;               //Ve para la etiqueta cuenta_time
+0073   01A3           00325                         CLRF CTA_UNISEG;                //Reinicia el contenido de las unidades de segun
+                            do 
+                      00326  
+0074   0AA4           00327                         INCF CTA_DECSEG,F;              //Incrementa la variable cta decenas de segundo 
+                            y guarada en el mismo registro
+0075   3006           00328                         MOVLW .6;                               //Mueve la constante 6 al registro de tr
+                            abajo 
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE  9
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0076   0224           00329                         SUBWF CTA_DECSEG,W;             //Resta la variable cta decenas de segundo menos
+                             el contenido del registro de trabajo guarda en w       
+0077   1D03           00330                         BTFSS STATUS,Z;                 //Si la bandera Z esta en 1 salta, si no ejecuta
+                             la siguiente instruccion 
+0078   285A           00331                         GOTO CUENTA_TIME;               //Ve para la etiqueta cuenta_time
+0079   01A3           00332                         CLRF CTA_UNISEG;                //Reinicia el contenido de las unidades de segun
+                            do 
+007A   01A4           00333                         CLRF CTA_DECSEG;                //Reinicia el contenido de las decenas de segund
+                            o 
+                      00334                                 
+007B   0AA5           00335                         INCF CTA_UNIMIN,F;              //Incrementa la variable cta unidades de min y g
+                            uarada en el mismo registro
+007C   300A           00336                         MOVLW .10;                              //Mueve la constante 10 al registro de t
+                            rabajo 
+007D   0225           00337                         SUBWF CTA_UNIMIN,W;             //Resta la variable cta unidades de min menos el
+                             contenido del registro de trabajo guarda en w
+007E   1D03           00338                         BTFSS STATUS,Z;                 //Si la bandera Z esta en 1 salta, si no ejecuta
+                             la siguiente instruccion       
+007F   285A           00339                         GOTO CUENTA_TIME;               //Ve para la etiqueta cuenta_time
+0080   01A3           00340                         CLRF CTA_UNISEG;                //Reinicia el contenido de las unidades de segun
+                            do
+0081   01A4           00341                         CLRF CTA_DECSEG;                //Reinicia el contenido de las decenas de segund
+                            o
+0082   01A5           00342                         CLRF CTA_UNIMIN;                //Reinicia el contenido de las unidades de minut
+                            os 
+                      00343 
+0083   0AA6           00344                         INCF CTA_DECMIN,F;              //Incrementa la variable cta decenas de min y gu
+                            arada en el mismo registro
+0084   3006           00345                         MOVLW .6;                               //Mueve la constante 6 al registro de tr
+                            abajo 
+0085   0226           00346                         SUBWF CTA_DECMIN,W;             //Resta la variable cta decenas de minutos menos
+                             el contenido del registro de trabajo guarda en 
+0086   1D03           00347                         BTFSS STATUS,Z;                 //Si la bandera Z esta en 1 salta, si no ejecuta
+                             la siguiente instruccion
+0087   285A           00348                         GOTO CUENTA_TIME;               //Ve para la etiqueta cuenta_time
+0088   01A3           00349                         CLRF CTA_UNISEG;                //Reinicia el contenido de las unidades de segun
+                            do
+0089   01A4           00350                         CLRF CTA_DECSEG;                //Reinicia el contenido de las decenas de segund
+                            o
+008A   01A5           00351                         CLRF CTA_UNIMIN;                //Reinicia el contenido de las unidades de minut
+                            os 
+008B   01A6           00352                         CLRF CTA_DECMIN;                //Reinicia el contenido de las decenas de minuto
+                            s 
+                      00353 
+008C   0AA7           00354                         INCF CTA_UNIHOR,F;              //Incrementa la variable cta unidades de hora y 
+                            guarada en el mismo registro
+008D   300A           00355                         MOVLW .10;                              //Mueve la constante 10 al registro de t
+                            rabajo 
+008E   0227           00356                         SUBWF CTA_UNIHOR,W;             //Resta la variable cta unidades de hora menos e
+                            l contenido del registro de trabajo guarda en w
+008F   1D03           00357                         BTFSS STATUS,Z;                 //Si la bandera Z esta en 1 salta, si no ejecuta
+                             la siguiente instruccion
+0090   285A           00358                         GOTO CUENTA_TIME;               //Ve para la etiqueta cuenta_time
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE 10
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0091   01A3           00359                         CLRF CTA_UNISEG;                //Reinicia el contenido de las unidades de segun
+                            do
+0092   01A4           00360                         CLRF CTA_DECSEG;                //Reinicia el contenido de las decenas de segund
+                            o
+0093   01A5           00361                         CLRF CTA_UNIMIN;                //Reinicia el contenido de las unidades de minut
+                            os 
+0094   01A6           00362                         CLRF CTA_DECMIN;                //Reinicia el contenido de las decenas de minuto
+                            s 
+0095   01A7           00363                         CLRF CTA_UNIHOR;                //Reinicia el contenido de las unidades de hora 
+                      00364 
+0096   0AA8           00365                         INCF CTA_DECHOR,F;              //Incrementa la variable cta decenas de hora y g
+                            uarada en el mismo registro
+0097   3003           00366                         MOVLW .3;                               //Mueve la constante 3 al registro de tr
+                            abajo
+0098   0228           00367                         SUBWF CTA_DECHOR,W;             //Resta la variable cta decenas de hora menos el
+                             contenido del registro de trabajo guarda en w
+0099   1D03           00368                         BTFSS STATUS,Z;                 //Si la bandera Z esta en 1 salta, si no ejecuta
+                             la siguiente instruccion
+009A   285A           00369                         GOTO CUENTA_TIME;               //Ve para la etiqueta cuenta_time
+009B   01A3           00370                         CLRF CTA_UNISEG;                //Reinicia el contenido de las unidades de segun
+                            do
+009C   01A4           00371                         CLRF CTA_DECSEG;                //Reinicia el contenido de las decenas de segund
+                            o
+009D   01A5           00372                         CLRF CTA_UNIMIN;                //Reinicia el contenido de las unidades de minut
+                            os 
+009E   01A6           00373                         CLRF CTA_DECMIN;                //Reinicia el contenido de las decenas de minuto
+                            s
+009F   01A7           00374                         CLRF CTA_UNIHOR;                //Reinicia el contenido de las unidades de hora 
+00A0   01A8           00375                         CLRF CTA_DECHOR;                //Reinicia el contenido de las decenas de hora
+00A1   285A           00376                         GOTO CUENTA_TIME;               //Ve para la etiqueta cuenta_time       
+                      00377 
+00A2   0008           00378 SAL_LOCO        RETURN;                                 //Regresa de la subrutina de cuenta del tiempo 
+                      00379 
+                      00380 ;-------------------------------------------------------------------------------------------------------
+                            ---
+                      00381 
+                      00382                         ;====================================================
+                      00383                         ;==Subrutina que rectifica =
+                      00384                         ;====================================================
+                      00385 
+00A3   3002           00386 RECTIFICA       MOVLW .2;                               //Cargar la constante 2 representa la cantidad d
+                            e decenas de hora
+00A4   0228           00387                         SUBWF CTA_DECHOR,W;             //Resta entre el registro cta_dechor menos el re
+                            gistro de trabajo
+00A5   1D03           00388                         BTFSS STATUS,Z;                 //Si el bit Z del registro STATUS es igual a 1 s
+                            alta,de lo contrario ejecuta normalmente
+00A6   28B1           00389                         GOTO SAL_RECTIFICA;             //ve para la salida de la subrutina rectifica
+                      00390 
+00A7   3004           00391                         MOVLW .4;                               //Cargar la constante 4 representa la ca
+                            ntidad de decenas de hora
+00A8   0227           00392                         SUBWF CTA_UNIHOR,W;     //Resta entre el contenido del registro cta_unihor menos
+                             el registro de trabajo
+00A9   1D03           00393                         BTFSS STATUS,Z;                 //Si el bit Z del registro STATUS es igual a 1 s
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE 11
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                            alta,de lo contrario ejecuta normalmente
+00AA   28B1           00394                         GOTO SAL_RECTIFICA;             //ve para la salida de la subrutina rectifica 
+                      00395 
+                      00396 
+00AB   01A3           00397                         CLRF CTA_UNISEG;                //Reinicia el contenido de las unidades de segun
+                            do
+00AC   01A4           00398                         CLRF CTA_DECSEG;                //Reinicia el contenido de las decenas de segund
+                            o
+00AD   01A5           00399                         CLRF CTA_UNIMIN;                //Reinicia el contenido de las unidades de minut
+                            o
+00AE   01A6           00400                         CLRF CTA_DECMIN;                //Reinicia el contenido de las decenas de minuto
+                            s
+00AF   01A7           00401                         CLRF CTA_UNIHOR;                //Reinicia el contenido de las unidades de hora 
+00B0   01A8           00402                         CLRF CTA_DECHOR;                //Reinicia el contenido de las decenas de hora
+                      00403 
+00B1                  00404 SAL_RECTIFICA   
+00B1   0008           00405                         RETURN;         //sal de la subrutina rectifica         
+                      00406 
+                      00407 ;-------------------------------------------------------------------------------------------------------
+                            ---
+                      00408 
+                      00409                         ;================================================
+                      00410                         ;==Subrutina de muestra mensajes en el display ==
+                      00411                         ;================================================
+                      00412 
+00B2                  00413 MUESTRA_TIME 
+00B2   1005           00414                         BCF PORTA,RS_LCD;               //Pone en modo comando al LCD
+00B3   3084           00415                         MOVLW 0X84;                             //Comando de ubicacion del apuntador en 
+                            el display
+00B4   0087           00416                         MOVWF PORTC;                    //Mover el contenido del registro de trabajo al 
+                            registro del puerto c
+00B5   2265           00417                         CALL PULSO_ENABLE;              //Llamada a la subrutina de Pulso Enable
+00B6   1405           00418                         BSF PORTA,RS_LCD;               //Pone en modo datos al LCD
+00B7   3030           00419                         MOVLW 0X30;                             //Cargar constante 30h a W
+00B8   0739           00420                         ADDWF BUFFER5,W;                //Sumar 30h al valor del buffer 5 para pasar el 
+                            valor numerico a ASCII
+00B9   0087           00421                         MOVWF PORTC;                    //Mover el contenido del registro de trabajo al 
+                            registro del puerto c
+00BA   2265           00422                         CALL PULSO_ENABLE;              //Llamada a la subrutina de Pulso Enable
+                      00423 
+00BB   1005           00424                         BCF PORTA,RS_LCD;               //Pone en modo comando al LCD
+00BC   3085           00425                         MOVLW 0X85;                             //Comando de ubicacion del apuntador en 
+                            el display
+00BD   0087           00426                         MOVWF PORTC;                    //Mover el contenido del registro de trabajo al 
+                            registro del puerto c
+00BE   2265           00427                         CALL PULSO_ENABLE;              //Llamada a la subrutina de Pulso Enable
+00BF   1405           00428                         BSF PORTA,RS_LCD;               //Pone en modo datos al LCD
+00C0   3030           00429                         MOVLW 0X30;                             // Cargar constante 30h a w
+00C1   0740           00430                         ADDWF BUFFER4,W;                //Sumar 30h al valor del buffer 4 para pasar el 
+                            valor numerico a ASCII
+00C2   0087           00431                         MOVWF PORTC;                    //Mover el contenido del registro de trabajo al 
+                            registro del puerto c
+00C3   2265           00432                         CALL PULSO_ENABLE;              //Llamada a la subrutina de Pulso Enable
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE 12
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00433 
+                      00434 
+00C4   1005           00435                         BCF PORTA,RS_LCD;               //Pone en modo comando al LCD
+00C5   3086           00436                         MOVLW 0X86;                             //Comando de ubicacion del apuntador en 
+                            el display
+00C6   0087           00437                         MOVWF PORTC;                    //Mover el contenido del registro de trabajo al 
+                            registro del puerto c
+00C7   2265           00438                         CALL PULSO_ENABLE;              //Llamada a la subrutina de Pulso Enable
+00C8   1405           00439                         BSF PORTA,RS_LCD;               //Pone en modo datos al LCD
+00C9   303A           00440                         MOVLW 0X3A;                             // Cargar constante 3Ah, dos puntos en a
+                            scii
+00CA   0087           00441                         MOVWF PORTC;                    //Mover el contenido del registro de trabajo al 
+                            registro del puerto c
+00CB   2265           00442                         CALL PULSO_ENABLE;              //Llamada a la subrutina de Pulso Enable
+                      00443                                 
+                      00444 
+00CC   1005           00445                         BCF PORTA,RS_LCD;               //Pone en modo comando al LCD
+00CD   3087           00446                         MOVLW 0X87;                             //Comando de ubicacion del apuntador en 
+                            el display
+00CE   0087           00447                         MOVWF PORTC;                    //Mover el contenido del registro de trabajo al 
+                            registro del puerto c
+00CF   2265           00448                         CALL PULSO_ENABLE;              //Llamada a la subrutina de Pulso Enable
+00D0   1405           00449                         BSF PORTA,RS_LCD;               //Pone en modo datos al LCD
+00D1   3030           00450                         MOVLW 0X30;                             // Cargar constante 30h
+00D2   0741           00451                         ADDWF BUFFER3,W;                //Sumar 30h al valor del buffer 3 para pasar el 
+                            valor numerico a ASCII
+00D3   0087           00452                         MOVWF PORTC;                    //Mover el contenido del registro de trabajo al 
+                            registro del puerto c
+00D4   2265           00453                         CALL PULSO_ENABLE;              //Llamada a la subrutina de Pulso Enable
+                      00454 
+00D5   1005           00455                         BCF PORTA,RS_LCD;               //Pone en modo comando al LCD
+00D6   3088           00456                         MOVLW 0X88;                             //Comando de ubicacion del apuntador en 
+                            el display
+00D7   0087           00457                         MOVWF PORTC;                    //Mover el contenido del registro de trabajo al 
+                            registro del puerto c
+00D8   2265           00458                         CALL PULSO_ENABLE;              //Llamada a la subrutina de Pulso Enable
+00D9   1405           00459                         BSF PORTA,RS_LCD;               //Pone en modo datos al LCD
+00DA   3030           00460                         MOVLW 0X30;                             // Cargar constante 30h
+00DB   0742           00461                         ADDWF BUFFER2,W;                //Sumar 30h al valor del buffer 2 para pasar el 
+                            valor numerico a ASCII
+00DC   0087           00462                         MOVWF PORTC;                    //Mover el contenido del registro de trabajo al 
+                            registro del puerto c
+00DD   2265           00463                         CALL PULSO_ENABLE;              //Llamada a la subrutina de Pulso Enable
+                      00464 
+00DE   1005           00465                         BCF PORTA,RS_LCD;               //Pone en modo comando al LCD
+00DF   3089           00466                         MOVLW 0X89;                             //Comando de ubicacion del apuntador en 
+                            el display
+00E0   0087           00467                         MOVWF PORTC;                    //Mover el contenido del registro de trabajo al 
+                            registro del puerto c
+00E1   2265           00468                         CALL PULSO_ENABLE;              //Llamada a la subrutina de Pulso Enable
+00E2   1405           00469                         BSF PORTA,RS_LCD;               //Pone en modo datos al LCD
+00E3   303A           00470                         MOVLW 0X3A;                             // Cargar constante 3Ah, dos puntos en a
+                            scii
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE 13
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+00E4   0087           00471                         MOVWF PORTC;                    //Mover el contenido del registro de trabajo al 
+                            registro del puerto c
+00E5   2265           00472                         CALL PULSO_ENABLE;              //Llamada a la subrutina de Pulso Enable
+                      00473 
+00E6   1005           00474                         BCF PORTA,RS_LCD;               // Pone en modo comando al LCD
+00E7   308A           00475                         MOVLW 0X8A;                             //Comando de ubicacion del apuntador en 
+                            el display
+00E8   0087           00476                         MOVWF PORTC;                    //Mover el contenido del registro de trabajo al 
+                            registro del puerto c
+00E9   2265           00477                         CALL PULSO_ENABLE;              //Llamada a la subrutina de Pulso Enable
+00EA   1405           00478                         BSF PORTA,RS_LCD;               //Pone en modo datos al LCD
+00EB   3030           00479                         MOVLW 0X30;                             //Cargar constante 30h
+00EC   0743           00480                         ADDWF BUFFER1,W;                //Sumar 30h al valor del buffer 1 para pasar el 
+                            valor numerico a ASCII
+00ED   0087           00481                         MOVWF PORTC;                    //Mover el contenido del registro de trabajo al 
+                            registro del puerto c
+00EE   2265           00482                         CALL PULSO_ENABLE;              //Llamada a la subrutina de Pulso Enable
+                      00483 
+00EF   1005           00484                         BCF PORTA,RS_LCD;               //Pone en modo comando al LCD
+00F0   308B           00485                         MOVLW 0X8B;                             //Comando de ubicacion del apuntador en 
+                            el display
+00F1   0087           00486                         MOVWF PORTC;                    //Mover el contenido del registro de trabajo al 
+                            registro del puerto c
+00F2   2265           00487                         CALL PULSO_ENABLE;              //Llamada a la subrutina de Pulso Enable
+00F3   1405           00488                         BSF PORTA,RS_LCD;               //Pone en modo datos al LCD
+00F4   3030           00489                         MOVLW 0X30;                             //Cargar constante 30h
+00F5   0744           00490                         ADDWF BUFFER0,W;                //Sumar 30h al valor del buffer 0 para pasar el 
+                            valor numerico a ASCII
+00F6   0087           00491                         MOVWF PORTC;                    //Mover el contenido del registro de trabajo al 
+                            registro del puerto c
+00F7   2265           00492                         CALL PULSO_ENABLE;              //Llamada a la subrutina de Pulso Enable
+                      00493 
+00F8   0000           00494 ESP_INT         NOP;                                    //No operacion 
+                      00495                         
+00F9   1C35           00496                         BTFSS BANDERAS,BAN_INT; //Si la bandera Z esta en 1 salta, si no ejecuta la sigu
+                            iente instruccion 
+00FA   28F8           00497                         GOTO ESP_INT;                   //Ve para la etiqueta esp_int
+00FB   1035           00498                         BCF BANDERAS,BAN_INT;   //Pon a 0 el bit ban_int del registro banderas
+00FC   0008           00499                         RETURN;                                 //regresa de la subrutina 
+                      00500 
+                      00501 ;-------------------------------------------------------------------------------------------------------
+                            ---
+                      00502 
+                      00503         ;================================================
+                      00504         ;   ==Subrutina de Barrre teclado================
+                      00505         ;================================================
+                      00506 
+00FD                  00507 BARRE_TECLADO
+                      00508                         
+00FD   1586           00509                         BSF PORTB,ACT_REN4;     //Desactiva el reglon 4 del teclado matricial
+00FE   0000           00510                         NOP;                                    //No operacion,para activar/desactivar d
+                            os bits consecutivamnete se requiere un nop entre ellos
+00FF   1006           00511                         BCF     PORTB,ACT_REN1;         //Activa reglon 1 del teclado matricial
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE 14
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0100   0806           00512                         MOVF PORTB,W;                   //Mueve el contenido del puerto B a el registro 
+                            W
+0101   00C5           00513                         MOVWF VAR_TECLADO;              //Mueve el contenido a la variable teclado
+0102   30F0           00514                         MOVLW 0XF0;                             //Enmascaramiento
+0103   05C5           00515                         ANDWF VAR_TECLADO,F;    //Enmascaramiento
+0104   30F0           00516                         MOVLW NO_HAYTECLA;              //Mueve la variable no hay tecla a W
+0105   0245           00517                         SUBWF VAR_TECLADO,W;    //Resta la variable teclado - Ni hay tecla(F0), almacena
+                             en W
+0106   1903           00518                         BTFSC STATUS,Z;                 //Revisa el estado de la bandera Z si es 0 salta
+0107   2918           00519                         GOTO RENGLON_2;                 //Ve a barrer el reglon 2
+                      00520                 
+0108   30E0           00521                         MOVLW TEC_7;                    //Mueve la constante tecla 7 a W
+0109   0245           00522                         SUBWF VAR_TECLADO,W;    //Resta la variable teclado - Tec_7, almacena en W
+010A   1903           00523                         BTFSC STATUS,Z;                 //Revisa el estado de la bandera Z si es 0 salta
+010B   298E           00524                         GOTO FUE_TEC7;                  //Ve aconvertir a ASCII la tecla 7
+                      00525                 
+010C   30D0           00526                         MOVLW TEC_8;                    //Mueve la constante tecla 8 a W
+010D   0245           00527                         SUBWF VAR_TECLADO,W;    //Resta la variable teclado - Tec_8 , almacena en W
+010E   1903           00528                         BTFSC STATUS,Z;                 //Revisa el estado de la bandera Z si es 0 salta
+010F   2993           00529                         GOTO FUE_TEC8;                  //Ve aconvertir a ASCII la tecla 8
+                      00530 
+0110   30B0           00531                         MOVLW TEC_9;                    //Mueve la constante tecla 9 a W
+0111   0245           00532                         SUBWF VAR_TECLADO,W;    //Resta la variable teclado - Tec_9, almacena en W
+0112   1903           00533                         BTFSC STATUS,Z;                 //Revisa el estado de la bandera Z si es 0 salta
+0113   2998           00534                         GOTO FUE_TEC9;                  //Ve aconvertir a ASCII la tecla 9
+                      00535 
+0114   3070           00536                         MOVLW TEC_A;                    //Mueve la constante tecla A a W
+0115   0245           00537                         SUBWF VAR_TECLADO,W;    //Resta la variable teclado - Tec_A, almacena en W
+0116   1903           00538                         BTFSC STATUS,Z;                 //Revisa el estado de la bandera Z si es 0 salta
+0117   299D           00539                         GOTO FUE_TECA;                  //Ve aconvertir a ASCII la tecla 9
+                      00540                         
+                      00541 
+                      00542 ;-------------------------------------------------------------------------------------------------------
+                            ---
+0118                  00543 RENGLON_2               
+0118   1406           00544                         BSF PORTB,ACT_REN1;     //Desactiva el reglon 1 del teclado matricial
+0119   0000           00545                         NOP;                                    //No operacion,para activar/desactivar d
+                            os bits consecutivamnete se requiere un nop entre ellos
+011A   1086           00546                         BCF     PORTB,ACT_REN2;         //Activa reglon 2 del teclado matricial
+011B   0806           00547                         MOVF PORTB,W;                   //Mueve el contenido del puerto B a el registro 
+                            W
+011C   00C5           00548                         MOVWF VAR_TECLADO;              //Mueve el contenido a la variable teclado
+011D   30F0           00549                         MOVLW 0XF0;                             //Enmascaramiento
+011E   05C5           00550                         ANDWF VAR_TECLADO,F;    //Enmascaramiento
+011F   30F0           00551                         MOVLW NO_HAYTECLA;              //mueve la variable no hay tecla a W
+0120   0245           00552                         SUBWF VAR_TECLADO,W;    //Resta la variable teclado - No hay tecla(F0), almacena
+                             en W
+0121   1903           00553                         BTFSC STATUS,Z;                 //Revisa el estado de la bandera Z si es 0 salta
+0122   2933           00554                         GOTO RENGLON_3;                 //Ve a barrer el reglon 3
+                      00555                 
+0123   30E0           00556                         MOVLW TEC_4;                    //Mueve la constante tecla 4 a W
+0124   0245           00557                         SUBWF VAR_TECLADO,W;    //Resta la variable teclado - Tec_4, almacena en W
+0125   1903           00558                         BTFSC STATUS,Z;                 //Revisa el estado de la bandera Z si es 0 salta
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE 15
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0126   297F           00559                         GOTO FUE_TEC4;                  //Ve aconvertir a ASCII la tecla 4
+                      00560                 
+0127   30D0           00561                         MOVLW TEC_5;                    //Mueve la constante tecla 5 a W
+0128   0245           00562                         SUBWF VAR_TECLADO,W;    //Resta la variable teclado - tecla 5, almacena en W
+0129   1903           00563                         BTFSC STATUS,Z;                 //Revisa el estado de la bandera Z si es 0 salta
+012A   2984           00564                         GOTO FUE_TEC5;                  //Ve aconvertir a ASCII la tecla 5
+                      00565 
+012B   30B0           00566                         MOVLW TEC_6;                    //Mueve la constante tecla 6 a W
+012C   0245           00567                         SUBWF VAR_TECLADO,W;    //Resta la variable teclado - tecla 6, almacena en W
+012D   1903           00568                         BTFSC STATUS,Z;                 //Revisa el estado de la bandera Z si es 0 salta
+012E   2989           00569                         GOTO FUE_TEC6;                  //Ve aconvertir a ASCII la tecla 6
+                      00570 
+012F   3070           00571                         MOVLW TEC_B;                    //Mueve la constante tecla B a W
+0130   0245           00572                         SUBWF VAR_TECLADO,W;    //Resta la variable teclado - tecla B, almacena en W
+0131   1903           00573                         BTFSC STATUS,Z;                 //Revisa el estado de la bandera Z si es 0 salta
+0132   29A2           00574                         GOTO FUE_TECB;                  //Ve aconvertir a ASCII la tecla B
+                      00575 
+                      00576                         
+                      00577 ;-------------------------------------------------------------------------------------------------------
+                            ---
+0133                  00578 RENGLON_3                       
+0133   1486           00579                         BSF PORTB,ACT_REN2;     //Desactiva el reglon 2 del teclado matricial
+0134   0000           00580                         NOP;                                    //No operacion,para activar/desactivar d
+                            os bits consecutivamnete se requiere un nop entre ellos
+0135   1106           00581                         BCF     PORTB,ACT_REN3;         //Activa reglon 3 del teclado matricial
+0136   0806           00582                         MOVF PORTB,W;                   //Mueve el contenido del puerto B a el registro 
+                            W
+0137   00C5           00583                         MOVWF VAR_TECLADO;              //Mueve el contenido a la variable teclado
+0138   30F0           00584                         MOVLW 0XF0;                             //Enmascaramiento
+0139   05C5           00585                         ANDWF VAR_TECLADO,F;    //Enmascaramiento
+013A   30F0           00586                         MOVLW NO_HAYTECLA;              //mueve la variable no hay tecla a W
+013B   0245           00587                         SUBWF VAR_TECLADO,W;    //Resta la variable teclado - Ni hay tecla(F0), almacena
+                             en W
+013C   1903           00588                         BTFSC STATUS,Z;                 //Revisa el estado de la bandera Z si es 0 salta
+013D   294E           00589                         GOTO RENGLON_4;                 //Ve a barrer el reglon 2
+                      00590                 
+013E   30E0           00591                         MOVLW TEC_1;                    //Mueve la constante tecla 1 a W
+013F   0245           00592                         SUBWF VAR_TECLADO,W;    //Resta la variable teclado - tecla 1, almacena en W
+0140   1903           00593                         BTFSC STATUS,Z;                 //Revisa el estado de la bandera Z si es 0 salta
+0141   2970           00594                         GOTO FUE_TEC1;                  //Ve aconvertir a ASCII la tecla 1
+                      00595                 
+0142   30D0           00596                         MOVLW TEC_2;                    //Mueve la constante tecla 2 a W
+0143   0245           00597                         SUBWF VAR_TECLADO,W;    //Resta la variable teclado - tecla 2, almacena en W
+0144   1903           00598                         BTFSC STATUS,Z;                 //Revisa el estado de la bandera Z si es 0 salta
+0145   2975           00599                         GOTO FUE_TEC2;                  //Ve aconvertir a ASCII la tecla 2
+                      00600 
+0146   30B0           00601                         MOVLW TEC_3;                    //Mueve la constante tecla 3 a W
+0147   0245           00602                         SUBWF VAR_TECLADO,W;    //Resta la variable teclado - tecla 3, almacena en W
+0148   1903           00603                         BTFSC STATUS,Z;                 //Revisa el estado de la bandera Z si es 0 salta
+0149   297A           00604                         GOTO FUE_TEC3;                  //Ve aconvertir a ASCII la tecla 3
+                      00605 
+014A   3070           00606                         MOVLW TEC_C;                    //Mueve la constante tecla C a W
+014B   0245           00607                         SUBWF VAR_TECLADO,W;    //Resta la variable teclado - tecla 3, almacena en W
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE 16
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+014C   1903           00608                         BTFSC STATUS,Z;                 //Revisa el estado de la bandera Z si es 0 salta
+014D   29A7           00609                         GOTO FUE_TECC;                  //Ve aconvertir a ASCII la tecla C
+                      00610 
+                      00611 
+                      00612 ;-------------------------------------------------------------------------------------------------------
+                            ---
+014E   1506           00613 RENGLON_4       BSF PORTB,ACT_REN3;     //Desactiva el reglon 3 del teclado matricial
+014F   0000           00614                         NOP;                                    //No operacion,para activar/desactivar d
+                            os bits consecutivamnete se requiere un nop entre ellos
+0150   1186           00615                         BCF     PORTB,ACT_REN4;         //Activa reglon 4 del teclado matricial
+0151   0806           00616                         MOVF PORTB,W;                   //Mueve el contenido del puerto B a el registro 
+                            W
+0152   00C5           00617                         MOVWF VAR_TECLADO;              //Mueve el contenido a la variable teclado
+0153   30F0           00618                         MOVLW 0XF0;                             //Enmascaramiento
+0154   05C5           00619                         ANDWF VAR_TECLADO,F;    //Enmascaramiento
+0155   30F0           00620                         MOVLW NO_HAYTECLA;              //mueve la variable no hay tecla a W
+0156   0245           00621                         SUBWF VAR_TECLADO,W;    //Resta la variable teclado - Ni hay tecla(F0), almacena
+                             en W
+0157   1903           00622                         BTFSC STATUS,Z;                 //Revisa el estado de la bandera Z si es 0 salta
+0158   28FD           00623                         GOTO BARRE_TECLADO;             //Ve a barrer el reglon 1
+                      00624                 
+0159   30E0           00625                         MOVLW TEC_CLEAR;                //Mueve la constante tecla asterisco a W
+015A   0645           00626                         XORWF VAR_TECLADO,W;    //Resta la variable teclado - tecla asterisco, almacena 
+                            en W
+015B   1903           00627                         BTFSC STATUS,Z;                 //Revisa el estado de la bandera Z si es 0 salta
+015C   29B5           00628                         GOTO FUE_TECCLEAR;              //Ve aconvertir a ASCII la tecla asterisco
+                      00629                 
+015D   30D0           00630                         MOVLW TEC_0;                    //Mueve la constante tecla 0 a W
+015E   0645           00631                         XORWF VAR_TECLADO,W;    //Resta la variable teclado - tecla 0, almacena en W
+015F   1903           00632                         BTFSC STATUS,Z;                 //Revisa el estado de la bandera Z si es 0 salta
+0160   296B           00633                         GOTO FUE_TEC0;                  //Ve aconvertir a ASCII la tecla 0
+                      00634 
+0161   30B0           00635                         MOVLW TEC_GATO;                 //Mueve la constante tecla gato a W
+0162   0645           00636                         XORWF VAR_TECLADO,W;    //Resta la variable teclado - tecla gato, almacena en W
+0163   1903           00637                         BTFSC STATUS,Z;                 //Revisa el estado de la bandera Z si es 0 salta
+0164   29B0           00638                         GOTO FUE_TECGATO;               //Ve aconvertir a ASCII la tecla gato
+                      00639 
+0165   3070           00640                         MOVLW TEC_D;                    //Mueve la constante tecla D a W
+0166   0645           00641                         XORWF VAR_TECLADO,W;    //Resta la variable teclado -tecla D, almacena en W
+0167   1903           00642                         BTFSC STATUS,Z;                 //Revisa el estado de la bandera Z si es 0 salta
+0168   29AB           00643                         GOTO FUE_TECD;                  //Ve aconvertir a ASCII la tecla D
+0169   2270           00644                         CALL RETARDO_40MS;
+016A   28FD           00645                         GOTO BARRE_TECLADO;
+                      00646 
+016B   3030           00647 FUE_TEC0        MOVLW '0';                              //Mueve la constante 0 en ASCII a w
+016C   00C6           00648                         MOVWF VAR_TECOPRI;              //Mueve elcontenido de w a la variable Var_tecop
+                            ri
+016D   3000           00649                         MOVLW .0;                               //Mueve la constante 0 en Binario a w
+016E   00C7           00650                         MOVWF VAR_TECBIN;               //Mueve el contenido de w a la variable Var_tecb
+                            in
+016F   29B7           00651                         GOTO SAL_BARRETECLADO;  //Sal de la subrutina barre teclado
+0170   3031           00652 FUE_TEC1        MOVLW '1';                              //Mueve la constante 1 en ASCII a w
+0171   00C6           00653                         MOVWF VAR_TECOPRI;              //Mueve el contenido de w a la variable Var_teco
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE 17
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                            pri
+0172   3001           00654                         MOVLW .1;                               //Mueve la constante 1 en Binario a w
+0173   00C7           00655                         MOVWF VAR_TECBIN;               //Mueve elcontenido de w a la variable Var_tecbi
+                            n
+0174   29B7           00656                         GOTO SAL_BARRETECLADO;  //Sal de la subrutina barre teclado
+0175   3032           00657 FUE_TEC2        MOVLW '2';                              //Mueve la constante 2 en ASCII a w
+0176   00C6           00658                         MOVWF VAR_TECOPRI;              //Mueve elcontenido de w a la variable Var_tecop
+                            ri
+0177   3002           00659                         MOVLW .2;                               //Mueve la constante 2 en Binario a w
+0178   00C7           00660                         MOVWF VAR_TECBIN;               //Mueve el contenido de w a la variable Var_tecb
+                            in
+0179   29B7           00661                         GOTO SAL_BARRETECLADO;  //Sal de la subruitan barre teclado
+017A   3033           00662 FUE_TEC3        MOVLW '3';                              //Mueve la constante 3 en ASCII a w
+017B   00C6           00663                         MOVWF VAR_TECOPRI;              //Mueve elcontenido de w a la variable Var_tecop
+                            ri
+017C   3003           00664                         MOVLW .3;                               //Mueve la constante 3 en Binario a w
+017D   00C7           00665                         MOVWF VAR_TECBIN;               //Mueve el contenido de w a la variable Var_tecb
+                            in
+017E   29B7           00666                         GOTO SAL_BARRETECLADO;  //Sal de la subruitan barre teclado
+017F   3034           00667 FUE_TEC4        MOVLW '4';                              //Mueve la constante 4 en ASCII a w
+0180   00C6           00668                         MOVWF VAR_TECOPRI;              //Mueve elcontenido de w a la variable Var_tecop
+                            ri
+0181   3004           00669                         MOVLW .4;                               //Mueve la constante 4 en Binario a w
+0182   00C7           00670                         MOVWF VAR_TECBIN;               //Mueve el contenido de w a la variable Var_tecb
+                            in
+0183   29B7           00671                         GOTO SAL_BARRETECLADO;  //Sal de la subruitan barre teclado
+0184   3035           00672 FUE_TEC5        MOVLW '5';                              //Mueve la constante 5 en ASCII a w
+0185   00C6           00673                         MOVWF VAR_TECOPRI;              //Mueve elcontenido de w a la variable Var_tecop
+                            ri
+0186   3005           00674                         MOVLW .5;                               //Mueve la constante 5 en Binario a w
+0187   00C7           00675                         MOVWF VAR_TECBIN;               //Mueve el contenido de w a la variable Var_tecb
+                            in
+0188   29B7           00676                         GOTO SAL_BARRETECLADO;  //Sal de la subruitan barre teclado
+0189   3036           00677 FUE_TEC6        MOVLW '6';                              //Mueve la constante 6 en ASCII a w
+018A   00C6           00678                         MOVWF VAR_TECOPRI;              //Mueve elcontenido de w a la variable Var_tecop
+                            ri
+018B   3006           00679                         MOVLW .6;                               //Mueve la constante 6 en Binario a w
+018C   00C7           00680                         MOVWF VAR_TECBIN;               //Mueve el contenido de w a la variable Var_tecb
+                            in
+018D   29B7           00681                         GOTO SAL_BARRETECLADO;  //Sal de la subruitan barre teclado
+018E   3037           00682 FUE_TEC7        MOVLW '7';                              //Mueve la constante 7 en ASCII a w
+018F   00C6           00683                         MOVWF VAR_TECOPRI;              //Mueve elcontenido de w a la variable Var_tecop
+                            ri
+0190   3007           00684                         MOVLW .7;                               //Mueve la constante 7 en Binario a w
+0191   00C7           00685                         MOVWF VAR_TECBIN;               //Mueve el contenido de w a la variable Var_tecb
+                            in
+0192   29B7           00686                         GOTO SAL_BARRETECLADO;  //Sal de la subruitan barre teclado
+0193   3038           00687 FUE_TEC8        MOVLW '8';                              //Mueve la constante 8 en ASCII a w
+0194   00C6           00688                         MOVWF VAR_TECOPRI;              //Mueve elcontenido de w a la variable Var_tecop
+                            ri
+0195   3008           00689                         MOVLW .8;                               //Mueve la constante 8 en Binario a w
+0196   00C7           00690                         MOVWF VAR_TECBIN;               //Mueve el contenido de w a la variable Var_tecb
+                            in
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE 18
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0197   29B7           00691                         GOTO SAL_BARRETECLADO;  //Sal de la subruitan barre teclado
+0198   3039           00692 FUE_TEC9        MOVLW '9';                              //Mueve la constante 9 en ASCII a w
+0199   00C6           00693                         MOVWF VAR_TECOPRI;              //Mueve elcontenido de w a la variable Var_tecop
+                            ri
+019A   3009           00694                         MOVLW .9;                               //Mueve la constante 9 en Binario a w
+019B   00C7           00695                         MOVWF VAR_TECBIN;               //Mueve el contenido de w a la variable Var_tecb
+                            in
+019C   29B7           00696                         GOTO SAL_BARRETECLADO;  //Sal de la subruitan barre teclado
+019D   3041           00697 FUE_TECA        MOVLW 'A';                              //Mueve la constante A en ASCII a w
+019E   00C6           00698                         MOVWF VAR_TECOPRI;              //Mueve elcontenido de w a la variable Var_tecop
+                            ri
+019F   300A           00699                         MOVLW .10;                              //Mueve la constante 10 en Binario a w
+01A0   00C7           00700                         MOVWF VAR_TECBIN;               //Mueve el contenido de w a la variable Var_tecb
+                            in
+01A1   29B7           00701                         GOTO SAL_BARRETECLADO;  //Sal de la subruitan barre teclado
+01A2   3042           00702 FUE_TECB        MOVLW 'B';                              //Mueve la constante B en ASCII a w
+01A3   00C6           00703                         MOVWF VAR_TECOPRI;              //Mueve elcontenido de w a la variable Var_tecop
+                            ri
+01A4   300B           00704                         MOVLW .11;                              //Mueve la constante 11 en Binario a w
+01A5   00C7           00705                         MOVWF VAR_TECBIN;               //Mueve el contenido de w a la variable Var_tecb
+                            in
+01A6   29B7           00706                         GOTO SAL_BARRETECLADO;  //Sal de la subruitan barre teclado
+01A7   3043           00707 FUE_TECC        MOVLW 'C';                              //Mueve la constante C en ASCII a w     
+01A8   300C           00708                         MOVLW .12;                              //Mueve la constante 12 en Binario a w
+01A9   00C7           00709                         MOVWF VAR_TECBIN;               //Mueve el contenido de w a la variable Var_tecb
+                            in
+01AA   29B7           00710                         GOTO SAL_BARRETECLADO;  //Sal de la subruitan barre teclado
+01AB   3044           00711 FUE_TECD        MOVLW 'D';                              //Mueve la constante D en ASCII a w
+01AC   14B5           00712                         BSF BANDERAS,BANDERA_D; //Pon a 1 la bandera D 
+01AD   300D           00713                         MOVLW .13;                              //Mueve la constante 13 en Binario a w
+01AE   00C7           00714                         MOVWF VAR_TECBIN;               //Mueve el contenido de w a la variable Var_tecb
+                            in
+01AF   29B7           00715                         GOTO SAL_BARRETECLADO;  //Sal de la subruitan barre teclado
+01B0   3023           00716 FUE_TECGATO     MOVLW '#';                              //Mueve la constante # en ASCII a w
+01B1   00C6           00717                         MOVWF VAR_TECOPRI;              //Mueve elcontenido de w a la variable Var_tecop
+                            ri
+01B2   300E           00718                         MOVLW .14;                              //Mueve la constante 14 en Binario a w
+01B3   00C7           00719                         MOVWF VAR_TECBIN;               //Mueve el contenido de w a la variable Var_tecb
+                            in
+01B4   29B7           00720                         GOTO SAL_BARRETECLADO;  //Sal de la subruitan barre teclado
+01B5                  00721 FUE_TECCLEAR    
+01B5   15B5           00722                         BSF BANDERAS,BANDERA_CLEAR;//Pon a 1 la bandera clear
+01B6   00C6           00723                         MOVWF VAR_TECOPRI;              //Mueve elcontenido de w a la variable Var_tecop
+                            ri
+                      00724                 
+01B7   0008           00725 SAL_BARRETECLADO RETURN;                        //Sal de la subrutina de barrido de teclado
+                      00726 ;-------------------------------------------------------------------------------------------------------
+                            ---
+                      00727 
+                      00728         ;================================================
+                      00729         ;   ==Subrutina de congiguración del tiempo==
+                      00730         ;================================================
+                      00731 
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE 19
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+01B8                  00732 CONFIG_TIME
+01B8   0000           00733                         NOP;                                            //No operación 
+01B9                  00734 DECENAS_HORA
+01B9   1135           00735                         BCF BANDERAS,BANDERA_TECLADO;// pone a 0 la bandera teclado
+01BA   20FD           00736                         CALL BARRE_TECLADO;                     //Llamada a la subrutina de barre teclad
+                            o que nos regresa un valor en ASCII y otro en binario
+01BB   18B5           00737                         BTFSC BANDERAS,BANDERA_D;       //Revisa el estado de la bandera D si es 1 sale 
+                            de la subrutina de config_time
+01BC   2A2F           00738                         GOTO SAL_CONFIGTIME;            //Salida de la subrutina configuracion del tiemp
+                            o
+                      00739 
+01BD   19B5           00740                         BTFSC BANDERAS,BANDERA_CLEAR;//Revisa el estado de la bandera clear si es 1 va a
+                             borrar el LCD
+01BE   2A28           00741                         GOTO BORRA_LCD;                         //Ve a borrar el contenidod de la LCD
+                      00742  
+01BF   0847           00743                         MOVF VAR_TECBIN,W;                      //Mueve el contenido de Var_tecbin a w
+01C0   00A8           00744                         MOVWF CTA_DECHOR;                       //Mueve el contenido de w a cta_dechor
+01C1   2231           00745                         CALL RECTIFICA_TECLA;           //Llamada a la subrutina que rectifica que la te
+                            cla oprimida sea correcta
+01C2   1935           00746                         BTFSC BANDERAS,BANDERA_TECLADO;//Revisa el estado de la bandera teclado si es 1 
+                            regresa a escanear las decenas de hora
+01C3   29B9           00747                         GOTO DECENAS_HORA;                      //Regresa a escanear de nuevo las decena
+                            s de hora
+                      00748                         
+01C4   1005           00749                         BCF PORTA,RS_LCD;                       //Pone en modo comando al LCD
+01C5   3084           00750                         MOVLW 0X84;                                     //Comando de apuntador en el dis
+                            play
+01C6   0087           00751                         MOVWF PORTC;                            //Mover el contenido del registro de tra
+                            bajo al registro portc
+01C7   2265           00752                         CALL PULSO_ENABLE;                      //Llamada a la subrutina de Pulso Enable
+01C8   1405           00753                         BSF PORTA,RS_LCD;                       //Pone en modo datos al LCD
+01C9   0846           00754                         MOVF VAR_TECOPRI,W;             //Mover la constante de tecla oprimida a W
+01CA   0087           00755                         MOVWF PORTC;                            //Mover la constante al puerto C
+01CB   2265           00756                         CALL PULSO_ENABLE;                      //Llamada a la subrutina de Pulso Enable
+01CC   2276           00757                         CALL RETARDO_250MS;                     //llamada a la subrtuina de retardo de 2
+                            50ms
+                      00758                                 
+01CD                  00759 UNIDADES_HORA
+01CD   1135           00760                         BCF BANDERAS,BANDERA_TECLADO;// pone a 0 la bandera teclado
+01CE   20FD           00761                         CALL BARRE_TECLADO;                     //Llamada a la subrutina de barre teclad
+                            o que nos regresa un valor en ASCII y otro en binario
+01CF   18B5           00762                         BTFSC BANDERAS,BANDERA_D;       //Revisa el estado de la bandera D si es 1 sale 
+                            de la subrutina de config_time
+01D0   2A2F           00763                         GOTO SAL_CONFIGTIME;            //Salida de la subrutina configuracion del tiemp
+                            o
+                      00764  
+01D1   0847           00765                         MOVF VAR_TECBIN,W;                      //Mueve el contenido de Var_tecbin a w
+01D2   00A7           00766                         MOVWF CTA_UNIHOR;                       //Mueve el contenido de w a cta_unihor
+01D3   2231           00767                         CALL RECTIFICA_TECLA;           //Llamada a la subrutina que rectifica que la te
+                            cla oprimida sea correcta
+01D4   1935           00768                         BTFSC BANDERAS,BANDERA_TECLADO;//Revisa el estado de la bandera teclado si es 1 
+                            regresa a escanear las unidades de hora
+01D5   29CD           00769                         GOTO UNIDADES_HORA;                     //Regresa a escanear de nuevo las unidad
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE 20
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                            es de hora
+                      00770                         
+01D6   1005           00771                         BCF PORTA,RS_LCD;                       //Pone en modo comando al LCD
+01D7   3085           00772                         MOVLW 0X85;                                     //Comando de apuntador en el dis
+                            play
+01D8   0087           00773                         MOVWF PORTC;                            //Mover el contenido del registro de tra
+                            bajo al registro portc
+01D9   2265           00774                         CALL PULSO_ENABLE;                      //Llamada a la subrutina de Pulso Enable
+01DA   1405           00775                         BSF PORTA,RS_LCD;                       //Pone en modo datos al LCD
+01DB   0846           00776                         MOVF VAR_TECOPRI,W;                     //Mover la constante de tecla oprimida a
+                             W
+01DC   0087           00777                         MOVWF PORTC;                            //Mover la constante al puerto C
+01DD   2265           00778                         CALL PULSO_ENABLE;                      //Llamada a la subrutina de Pulso Enable
+01DE   2276           00779                         CALL RETARDO_250MS;                     //llamada a la subrtuina de retardo de 2
+                            50ms
+                      00780 
+01DF                  00781 DECENAS_MIN
+01DF   1135           00782                         BCF BANDERAS,BANDERA_TECLADO;// pone a 0 la bandera teclado
+01E0   20FD           00783                         CALL BARRE_TECLADO;                     //Llamada a la subrutina de barre teclad
+                            o que nos regresa un valor en ASCII y otro en binario
+01E1   18B5           00784                         BTFSC BANDERAS,BANDERA_D;       //Revisa el estado de la bandera D si es 1 sale 
+                            de la subrutina de config_time
+01E2   2A2F           00785                         GOTO SAL_CONFIGTIME;            //Salida de la subrutina configuracion del tiemp
+                            o
+                      00786  
+01E3   0847           00787                         MOVF VAR_TECBIN,W;                      //Mueve el contenido de Var_tecbin a w
+01E4   00A6           00788                         MOVWF CTA_DECMIN;                       //Mueve el contenido de w a cta_decmin
+01E5   2231           00789                         CALL RECTIFICA_TECLA;           //Llamada a la subrutina que rectifica que la te
+                            cla oprimida sea correcta
+01E6   1935           00790                         BTFSC BANDERAS,BANDERA_TECLADO;//Revisa el estado de la bandera teclado si es 1 
+                            regresa a escanear las decenas de minuto
+01E7   29DF           00791                         GOTO DECENAS_MIN;                       //Regresa a escanear de nuevo las decena
+                            s de minuto
+                      00792                         
+01E8   1005           00793                         BCF PORTA,RS_LCD;                       //Pone en modo comando al LCD
+01E9   3087           00794                         MOVLW 0X87;                                     //Comando de apuntador en el dis
+                            play
+01EA   0087           00795                         MOVWF PORTC;                            //Mover el contenido del registro de tra
+                            bajo al registro portc
+01EB   2265           00796                         CALL PULSO_ENABLE;                      //Llamada a la subrutina de Pulso Enable
+01EC   1405           00797                         BSF PORTA,RS_LCD;                       //Pone en modo datos al LCD
+01ED   0846           00798                         MOVF VAR_TECOPRI,W;             //Mover la constante de tecla oprimida a W
+01EE   0087           00799                         MOVWF PORTC;                            //Mover la constante al puerto C
+01EF   2265           00800                         CALL PULSO_ENABLE;                      //Llamada a la subrutina de Pulso Enable
+01F0   2276           00801                         CALL RETARDO_250MS;                     //llamada a la subrtuina de retardo de 2
+                            50ms            
+                      00802 
+01F1                  00803 UNIDADES_MIN
+01F1   1135           00804                         BCF BANDERAS,BANDERA_TECLADO;// pone a 0 la bandera teclado
+01F2   20FD           00805                         CALL BARRE_TECLADO;                     //Llamada a la subrutina de barre teclad
+                            o que nos regresa un valor en ASCII y otro en binario
+01F3   18B5           00806                         BTFSC BANDERAS,BANDERA_D;       //Revisa el estado de la bandera D si es 1 sale 
+                            de la subrutina de config_time
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE 21
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+01F4   2A2F           00807                         GOTO SAL_CONFIGTIME;            //Salida de la subrutina configuracion del tiemp
+                            o
+                      00808  
+01F5   0847           00809                         MOVF VAR_TECBIN,W;                      //Mueve el contenido de Var_tecbin a w
+01F6   00A5           00810                         MOVWF CTA_UNIMIN;                       //Mueve el contenido de w a cta_unimin
+01F7   2231           00811                         CALL RECTIFICA_TECLA;           //Llamada a la subrutina que rectifica que la te
+                            cla oprimida sea correcta
+01F8   1935           00812                         BTFSC BANDERAS,BANDERA_TECLADO;//Revisa el estado de la bandera teclado si es 1 
+                            regresa a escanear las unidades de minuto
+01F9   29F1           00813                         GOTO UNIDADES_MIN;                      //Regresa a escanear de nuevo las unidad
+                            es de minuto
+                      00814                         
+01FA   1005           00815                         BCF PORTA,RS_LCD;                       //Pone en modo comando al LCD
+01FB   3088           00816                         MOVLW 0X88;                                     //Comando de apuntador en el dis
+                            play
+01FC   0087           00817                         MOVWF PORTC;                            //Mover el contenido del registro de tra
+                            bajo al registro portc
+01FD   2265           00818                         CALL PULSO_ENABLE;                      //Llamada a la subrutina de Pulso Enable
+01FE   1405           00819                         BSF PORTA,RS_LCD;                       //Pone en modo datos al LCD
+01FF   0846           00820                         MOVF VAR_TECOPRI,W;             //Mover la constante de tecla oprimida a W
+0200   0087           00821                         MOVWF PORTC;                            //Mover la constante al puerto C
+0201   2265           00822                         CALL PULSO_ENABLE;                      //Llamada a la subrutina de Pulso Enable
+0202   2276           00823                         CALL RETARDO_250MS;                     //llamada a la subrtuina de retardo de 2
+                            50ms
+0203                  00824 DECENAS_SEG
+0203   1135           00825                         BCF BANDERAS,BANDERA_TECLADO;// pone a 0 la bandera teclado
+0204   20FD           00826                         CALL BARRE_TECLADO;                     //Llamada a la subrutina de barre teclad
+                            o que nos regresa un valor en ASCII y otro en binario
+0205   18B5           00827                         BTFSC BANDERAS,BANDERA_D;       //Revisa el estado de la bandera D si es 1 sale 
+                            de la subrutina de config_time
+0206   2A2F           00828                         GOTO SAL_CONFIGTIME;            //Salida de la subrutina configuracion del tiemp
+                            o
+                      00829  
+0207   0847           00830                         MOVF VAR_TECBIN,W;                      //Mueve el contenido de Var_tecbin a w
+0208   00A4           00831                         MOVWF CTA_DECSEG;                       //Mueve el contenido de w a cta_decseg
+0209   2231           00832                         CALL RECTIFICA_TECLA;           //Llamada a la subrutina que rectifica que la te
+                            cla oprimida sea correcta
+020A   1935           00833                         BTFSC BANDERAS,BANDERA_TECLADO;//Revisa el estado de la bandera teclado si es 1 
+                            regresa a escanear las decenas de segundo
+020B   2A03           00834                         GOTO DECENAS_SEG;                       //Regresa a escanear de nuevo las decena
+                            s de segundo
+                      00835                         
+                      00836                 
+020C   1005           00837                         BCF PORTA,RS_LCD;                       //Pone en modo comando al LCD
+020D   308A           00838                         MOVLW 0X8A;                                     //Comando de apuntador en el dis
+                            play
+020E   0087           00839                         MOVWF PORTC;                            //Mover el contenido del registro de tra
+                            bajo al registro portc
+020F   2265           00840                         CALL PULSO_ENABLE;                      //Llamada a la subrutina de Pulso Enable
+0210   1405           00841                         BSF PORTA,RS_LCD;                       //Pone en modo datos al LCD
+0211   0846           00842                         MOVF VAR_TECOPRI,W;                      //Mover la constante de tecla oprimida 
+                            a W
+0212   0087           00843                         MOVWF PORTC;                            //Mover la constante al puerto C
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE 22
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0213   2265           00844                         CALL PULSO_ENABLE;                      //Llamada a la subrutina de Pulso Enable
+0214   2276           00845                         CALL RETARDO_250MS;                     //llamada a la subrtuina de retardo de 2
+                            50ms
+                      00846 
+0215                  00847 UNIDADES_SEG
+0215   1135           00848                         BCF BANDERAS,BANDERA_TECLADO;// pone a 0 la bandera teclado
+0216   20FD           00849                         CALL BARRE_TECLADO;                     //Llamada a la subrutina de barre teclad
+                            o que nos regresa un valor en ASCII y otro en binario
+0217   18B5           00850                         BTFSC BANDERAS,BANDERA_D;       //Revisa el estado de la bandera D si es 1 sale 
+                            de la subrutina de config_time
+0218   2A2F           00851                         GOTO SAL_CONFIGTIME;            //Salida de la subrutina configuracion del tiemp
+                            o
+                      00852 
+0219   0847           00853                         MOVF VAR_TECBIN,W;                      //Mueve el contenido de Var_tecbin a w
+021A   00A3           00854                         MOVWF CTA_UNISEG;                       //Mueve el contenido de w a cta_uniseg
+021B   2231           00855                         CALL RECTIFICA_TECLA;           //Llamada a la subrutina que rectifica que la te
+                            cla oprimida sea correcta
+021C   1935           00856                         BTFSC BANDERAS,BANDERA_TECLADO;//Revisa el estado de la bandera teclado si es 1 
+                            regresa a escanear las unidades de segundo
+021D   2A15           00857                         GOTO UNIDADES_SEG;                      //Regresa a escanear de nuevo las unidad
+                            es de segundo
+                      00858                 
+021E   1005           00859                         BCF PORTA,RS_LCD;                       //Pone en modo comando al LCD
+021F   308B           00860                         MOVLW 0X8B;                                     //Comando de apuntador en el dis
+                            play
+0220   0087           00861                         MOVWF PORTC;                            //Mover el contenido del registro de tra
+                            bajo al registro portc
+0221   2265           00862                         CALL PULSO_ENABLE;                      //Llamada a la subrutina de Pulso Enable
+0222   1405           00863                         BSF PORTA,RS_LCD;                       //Pone en modo datos al LCD
+0223   0846           00864                         MOVF VAR_TECOPRI,W;             //Mover la constante de tecla oprimida a W
+0224   0087           00865                         MOVWF PORTC;                            //Mover la constante al puerto C
+0225   2265           00866                         CALL PULSO_ENABLE;                      //Llamada a la subrutina de Pulso Enable
+0226   2276           00867                         CALL RETARDO_250MS;                     //llamada a la subrtuina de retardo de 2
+                            50ms
+0227   29B8           00868                         GOTO CONFIG_TIME;                       //Regresa a escanear de nuevo la configu
+                            racion del tiempo 
+                      00869                         
+                      00870 
+0228                  00871 BORRA_LCD
+                      00872 
+0228   1005           00873                         BCF PORTA,RS_LCD;                       //Pone en modo comando al LCD
+0229   3001           00874                         MOVLW 0X01;                                     //Borra el texto y dirige el cur
+                            sor al primer dígito
+022A   0087           00875                         MOVWF PORTC;                            //Mover el contenido del registro de tra
+                            bajo al registro portc
+022B   2265           00876                         CALL PULSO_ENABLE;                      //Llamada a la subrutina de Pulso Enable
+022C   1405           00877                         BSF PORTA,RS_LCD;                       //Pone en modo comando al LCD
+022D   11B5           00878                         BCF BANDERAS, BANDERA_CLEAR;//Pone a 0 la bandera clear
+022E   29B8           00879                         GOTO CONFIG_TIME;                       //Regresa a escanear de nuevo la configu
+                            racion del tiempo 
+                      00880 
+                      00881 
+022F   10B5           00882 SAL_CONFIGTIME  BCF BANDERAS, BANDERA_D;//Pone a 0 la bandera D
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE 23
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0230   0008           00883                                 RETURN;                                 //Regreso de la subrutina de con
+                            figuracion del tiempo
+                      00884 
+                      00885 
+                      00886 ;-------------------------------------------------------------------------------------------------------
+                            ---
+                      00887                                 ;==============================
+                      00888                                 ;       ==Subrutina Rectifica Tecla=
+                      00889                                 ;==============================
+                      00890 
+0231                  00891 RECTIFICA_TECLA 
+0231   3003           00892                                 MOVLW .3;                   //Mueve la cosntante 3 al registro W
+0232   0228           00893                                 SUBWF CTA_DECHOR,W;     // Resta el contenido del registro decenas de ho
+                            ra- w, el reultado lo almacena en W
+0233   1C83           00894                                 BTFSS STATUS,DC;        //Verifica si la operacion tiene acarreo, si es 
+                            asi va a borrar el contenido de registro decenas de hora,
+0234   2A36           00895                                 GOTO DECHOR2;           //Ve a rectifica decenas de hora  2
+0235   2A4A           00896                                 GOTO BORRA_DECHOR;      //Vea borrar el contenido de decenas de hora
+                      00897                         
+                      00898 
+0236   3002           00899 DECHOR2                 MOVLW .2;                       //Mueve la cosntante 2 al registro W
+0237   0228           00900                                 SUBWF CTA_DECHOR,W; // Resta el contenido del registro decenas de hora- 
+                            w, el reultado lo almacena en W
+0238   1D03           00901                                 BTFSS STATUS,Z;         //Verifica si la operacion tiene como resultado 
+                            0, si es asi salta, de lo contrario va a decenas de minutos
+0239   2A40           00902                                 GOTO DECMIN;            //Ve a rectificar decenas de minutos
+023A   2A3B           00903                                 GOTO UNIHOR;            //Ve a verificar decenas de minutos
+                      00904 
+023B   3004           00905 UNIHOR                          MOVLW .4;               //Mueve la cosntante 4 al registro W
+023C   0227           00906                                 SUBWF CTA_UNIHOR,W; //Resta el contenido del registro unidades de hora- 
+                            w, el reultado lo almacena en W
+023D   1C83           00907                                 BTFSS STATUS,DC;        //Verifica si la operacion tiene acarreo, si es 
+                            asi va a borrar el contenido de registro decenas de minuto,
+023E   2A40           00908                                 GOTO DECMIN;            //Ve a rectificar decenas de minutos
+023F   2A4C           00909                                 GOTO BORRA_UNIHOR;  //Va a borrar el contenido de unidades de hora
+                      00910 
+0240                  00911 DECMIN
+0240   3006           00912                                 MOVLW .6;                       //Mueve la cosntante 6 al registro W
+0241   0226           00913                                 SUBWF CTA_DECMIN,W; // Resta el contenido del registro decenas de minuto
+                            - w, el reultado lo almacena en W
+0242   1C83           00914                                 BTFSS STATUS,DC;        //Verifica si la operacion tiene acarreo, si es 
+                            asi va a borrar el contenido de registro decenas de segundo,
+0243   2A45           00915                                 GOTO DECSEG;            //Ve a rectificar decenas de segundos;
+0244   2A4E           00916                                 GOTO BORRA_DECMIN;  //Va a borrar el contenido de decenas de minuto
+                      00917 
+                      00918 
+                      00919 
+0245   3006           00920 DECSEG                  MOVLW .6;                       //Mueve la cosntante 6 al registro W
+0246   0224           00921                                 SUBWF CTA_DECSEG,W; // Resta el contenido del registro decenas de segund
+                            o- w, el resultado lo almacena en W
+0247   1C83           00922                                 BTFSS STATUS,DC;        //Verifica si la operacion tiene acarreo, si es 
+                            asi va a borrar el contenido de registro decenas de segundo,
+0248   2A54           00923                                 GOTO CORRECTA;          //Una vez que se concluyo se determino que es co
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE 24
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                            rrecto el numero introducido
+0249   2A50           00924                                 GOTO BORRA_DECSEG;  //Va a borrar el contenido de decenas de hora       
+                                            
+                      00925                                                 
+                      00926 
+024A                  00927 BORRA_DECHOR
+024A   01A8           00928                                 CLRF CTA_DECHOR;        //Borra la cuenta de decenas de hora
+024B   2A52           00929                                 GOTO INCORRECTA;        //Una vez que se concluyo se determino que es in
+                            correcto el numero introducido
+024C                  00930 BORRA_UNIHOR
+024C   01A7           00931                                 CLRF CTA_UNIHOR;        //Borra la cuenta de unidades de hora
+024D   2A52           00932                                 GOTO INCORRECTA;        //Una vez que se concluyo se determino que es in
+                            correcto el numero introducido
+024E                  00933 BORRA_DECMIN
+024E   01A6           00934                                 CLRF CTA_DECMIN;        //Borra la cuenta de decenas de minutos
+024F   2A52           00935                                 GOTO INCORRECTA;        //Una vez que se concluyo se determino que es in
+                            correcto el numero introducido
+0250                  00936 BORRA_DECSEG
+0250   01A4           00937                                 CLRF CTA_DECSEG;        //Borra la cuenta de decenas de segundos
+0251   2A52           00938                                 GOTO INCORRECTA;        //Una vez que se concluyo se determino que es in
+                            correcto el numero introducido
+                      00939 
+0252   1535           00940 INCORRECTA              BSF BANDERAS,BANDERA_TECLADO;//Pone a 1 la bandera de teclado
+0253   2A55           00941                                 GOTO SALRUTINA;         //Ve para la salida de la subrutina rectifica te
+                            cla
+                      00942 
+0254   1135           00943 CORRECTA                BCF BANDERAS,BANDERA_TECLADO;   //Pone a 0 la bandera de teclado
+                      00944                         
+                      00945 
+0255   0008           00946 SALRUTINA               RETURN;                         //Salida de la subrutina rectifica tecla
+                      00947                                  
+                      00948 ;-------------------------------------------------------------------------------------------------------
+                            ---
+                      00949 
+                      00950         ;================================================
+                      00951         ;   ==Subrutina de inicializacion en el LCD ==
+                      00952         ;================================================
+                      00953 
+0256   1005           00954 INI_LCD         BCF PORTA,RS_LCD;               //Pone en modo comando al LCD
+                      00955                         
+0257   3038           00956                         MOVLW 0X38;                             //selecciona el modo de bus, formato de 
+                            vizualizacion y lineas de vizualizacion
+0258   0087           00957                         MOVWF PORTC;                    //Mover el contenido del registro de trabajo al 
+                            registro portc
+0259   2265           00958                         CALL PULSO_ENABLE;              //Llamada a la subrutina de Pulso Enable
+025A   300C           00959                         MOVLW 0X0C;                     //activa el cursor y configura el parpadeo del c
+                            ursor
+025B   0087           00960                         MOVWF PORTC;                    //Mover el contenido del registro de trabajo al 
+                            registro portc
+025C   2265           00961                         CALL PULSO_ENABLE;              //Llamada a la subrutina de Pulso Enable
+025D   3001           00962                         MOVLW 0X01;                             //Borra el texto y dirige el cursor al p
+                            rimer dígito
+025E   0087           00963                         MOVWF PORTC;                    //Mover el contenido del registro de trabajo al 
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE 25
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                            registro portc
+025F   2265           00964                         CALL PULSO_ENABLE;              //Llamada a la subrutina de Pulso Enable
+0260   3080           00965                         MOVLW 0X80;                             //Coloca el cursor en el primer dígito
+0261   0087           00966                         MOVWF PORTC;                    //Mover el contenido del registro de trabajo al 
+                            registro portc
+0262   2265           00967                         CALL PULSO_ENABLE;              //Llamada a la subrutina de Pulso Enable
+                      00968                         
+0263   1405           00969                         BSF PORTA,RS_LCD;               //Pone en modo datos al LCD
+0264   0008           00970                         RETURN;                                 //regresa de la subrutina 
+                      00971 
+                      00972 ;-------------------------------------------------------------------------------------------------------
+                            ---
+                      00973                                 ;==============================
+                      00974                                 ;       ==Subrutina Pulso Enable=
+                      00975                                 ;==============================
+                      00976 
+0265   1085           00977 PULSO_ENABLE    BCF PORTA,ENABLE_LCD;   //Pon a 0 el bit Enable_LCD del registro porta
+0266   226A           00978                                 CALL RETARDO_1MS;               //Llamada a la subrutina de retardo de 1
+                            ms
+0267   1485           00979                                 BSF PORTA,ENABLE_LCD;   //Pon a 1 el bit Enable_LCD del registro porta
+0268   2270           00980                                 CALL RETARDO_40MS;      //Llamada a la subrutina de retardo de 40ms
+0269   0008           00981                                 RETURN;
+                      00982 ;-------------------------------------------------------------------------------------------------------
+                            ---
+                      00983 
+                      00984 
+                      00985                                 ;==============================
+                      00986                                 ;==Subrutina de retardo de 1ms=
+                      00987                                 ;==============================
+                      00988 
+026A   01B6           00989 RETARDO_1MS     CLRF CONT_MILIS;                //Limpia el registro cont milis         
+026B   3001           00990 LOOP_1MS                MOVLW .1;                               //Mueve la constante 1 al registro de tr
+                            abajo 
+026C   0236           00991                                 SUBWF CONT_MILIS,W;             //Resta entre el registro cont milis men
+                            os el registro de trabajo
+026D   1D03           00992                                 BTFSS STATUS,Z;                 //Si el bit Z del registro STATUS es igu
+                            al a 1 salta
+026E   2A6B           00993                                 GOTO LOOP_1MS;                  //Ve para la etiqueta loop_1ms
+                      00994                         
+026F   0008           00995                                 RETURN;                                 //regresa de la subrutina
+                      00996 ;-------------------------------------------------------------------------------------------------------
+                            ---
+                      00997 
+                      00998 
+                      00999                                 ;==============================
+                      01000                                 ;==Subrutina de retardo de 40ms=
+                      01001                                 ;==============================
+                      01002 
+0270   01B6           01003 RETARDO_40MS    CLRF CONT_MILIS;                //Limpia el registro cont milis 
+0271   3028           01004 LOOP_40MS               MOVLW .40;                              //Mueve la constante 40 al registro de t
+                            rabajo 
+0272   0236           01005                                 SUBWF CONT_MILIS,W;             //Resta entre el registro cont milis men
+                            os el registro de trabajo
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE 26
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0273   1D03           01006                                 BTFSS STATUS,Z;                 //Si el bit Z del registro STATUS es igu
+                            al a 1 salta
+0274   2A71           01007                                 GOTO LOOP_40MS;                 //Ve para la etiqueta loop_40ms
+                      01008                         
+0275   0008           01009                                 RETURN;                                 //regresa de la subrutina
+                      01010 
+                      01011 ;-------------------------------------------------------------------------------------------------------
+                            ---
+                      01012 
+                      01013 
+                      01014 
+                      01015                                 ;==============================
+                      01016                                 ;==Subrutina de retardo de 250ms=
+                      01017                                 ;==============================
+                      01018 
+0276   01B6           01019 RETARDO_250MS   CLRF CONT_MILIS;                //Limpia el registro cont milis 
+0277   30FA           01020 LOOP_250MS              MOVLW .250;                             //Mueve la constante 250 al registro de 
+                            trabajo 
+0278   0236           01021                                 SUBWF CONT_MILIS,W;             //Resta entre el registro cont milis men
+                            os el registro de trabajo
+0279   1D03           01022                                 BTFSS STATUS,Z;                 //Si el bit Z del registro STATUS es igu
+                            al a 1 salta
+027A   2A77           01023                                 GOTO LOOP_250MS;                //Ve para la etiqueta loop_250ms
+                      01024                         
+027B   0008           01025                                 RETURN;                                 //regresa de la subrutina
+                      01026 
+                      01027 ;-------------------------------------------------------------------------------------------------------
+                            ---
+Warning[205]: Found directive in column 1. (END)
+Warning[211]: Extraneous arguments on the line.
+                      01028 END                                                                             //FIN DEL PROGRAMA
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE 27
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ACKDT                             00000005
+ACKEN                             00000004
+ACKSTAT                           00000006
+ACT_REN1                          00000000
+ACT_REN2                          00000001
+ACT_REN3                          00000002
+ACT_REN4                          00000003
+ADCON0                            0000001F
+ADCON1                            0000009F
+ADCS0                             00000006
+ADCS1                             00000007
+ADCS2                             00000006
+ADDEN                             00000003
+ADFM                              00000007
+ADIE                              00000006
+ADIF                              00000006
+ADON                              00000000
+ADRESH                            0000001E
+ADRESL                            0000009E
+BANDERAS                          00000035
+BANDERA_CLEAR                     00000003
+BANDERA_D                         00000001
+BANDERA_TECLADO                   00000002
+BAN_INT                           00000000
+BARRE_TECLADO                     000000FD
+BCLIE                             00000003
+BCLIF                             00000003
+BF                                00000000
+BORRA_DECHOR                      0000024A
+BORRA_DECMIN                      0000024E
+BORRA_DECSEG                      00000250
+BORRA_LCD                         00000228
+BORRA_UNIHOR                      0000024C
+BRGH                              00000002
+BUFFER0                           00000044
+BUFFER1                           00000043
+BUFFER2                           00000042
+BUFFER3                           00000041
+BUFFER4                           00000040
+BUFFER5                           00000039
+C                                 00000000
+C1INV                             00000004
+C1OUT                             00000006
+C2INV                             00000005
+C2OUT                             00000007
+CCP1CON                           00000017
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE 28
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+CCP1Y                             00000004
+CCP2CON                           0000001D
+CCP2IE                            00000000
+CCP2IF                            00000000
+CCP2M0                            00000000
+CCP2M1                            00000001
+CCP2M2                            00000002
+CCP2M3                            00000003
+CCP2X                             00000005
+CCP2Y                             00000004
+CCPR1H                            00000016
+CCPR1L                            00000015
+CCPR2H                            0000001C
+CCPR2L                            0000001B
+CHS0                              00000003
+CHS1                              00000004
+CHS2                              00000005
+CIS                               00000003
+CKE                               00000006
+CKP                               00000004
+CM0                               00000000
+CM1                               00000001
+CM2                               00000002
+CMCON                             0000009C
+CMIE                              00000006
+CMIF                              00000006
+COL_1                             00000004
+COL_2                             00000005
+COL_3                             00000006
+COL_4                             00000007
+CONFIG_TIME                       000001B8
+CONT_MILIS                        00000036
+CORRECTA                          00000254
+CREN                              00000004
+CSRC                              00000007
+CTA_DECHOR                        00000028
+CTA_DECMIN                        00000026
+CTA_DECSEG                        00000024
+CTA_UNIHOR                        00000027
+CTA_UNIMIN                        00000025
+CTA_UNISEG                        00000023
+CUENTA_TIME                       0000005A
+CVR0                              00000000
+CVR1                              00000001
+CVR2                              00000002
+CVR3                              00000003
+CVRCON                            0000009D
+CVREN                             00000007
+CVROE                             00000006
+CVRR                              00000005
+D                                 00000005
+D0_LCD                            00000000
+D1_LCD                            00000001
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE 29
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+D2_LCD                            00000002
+D3_LCD                            00000003
+D4_LCD                            00000004
+D5_LCD                            00000005
+D6_LCD                            00000006
+D7_LCD                            00000007
+DATA_ADDRESS                      00000005
+DC                                00000001
+DECENAS_HORA                      000001B9
+DECENAS_MIN                       000001DF
+DECENAS_SEG                       00000203
+DECHOR2                           00000236
+DECMIN                            00000240
+DECSEG                            00000245
+D_A                               00000005
+EEADR                             0000010D
+EEADRH                            0000010F
+EECON1                            0000018C
+EECON2                            0000018D
+EEDATA                            0000010C
+EEDATH                            0000010E
+EEIE                              00000004
+EEIF                              00000004
+EEPGD                             00000007
+ENABLE_LCD                        00000001
+ESP_INT                           000000F8
+F                                 00000001
+FERR                              00000002
+FSR                               00000004
+FUE_TEC0                          0000016B
+FUE_TEC1                          00000170
+FUE_TEC2                          00000175
+FUE_TEC3                          0000017A
+FUE_TEC4                          0000017F
+FUE_TEC5                          00000184
+FUE_TEC6                          00000189
+FUE_TEC7                          0000018E
+FUE_TEC8                          00000193
+FUE_TEC9                          00000198
+FUE_TECA                          0000019D
+FUE_TECB                          000001A2
+FUE_TECC                          000001A7
+FUE_TECCLEAR                      000001B5
+FUE_TECD                          000001AB
+FUE_TECGATO                       000001B0
+GCEN                              00000007
+GIE                               00000007
+GO                                00000002
+GO_DONE                           00000002
+I2C_DATA                          00000005
+I2C_READ                          00000002
+I2C_START                         00000003
+I2C_STOP                          00000004
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE 30
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+IBF                               00000007
+IBOV                              00000005
+INCORRECTA                        00000252
+INDF                              00000000
+INI_LCD                           00000256
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IRP                               00000007
+LOOP_1MS                          0000026B
+LOOP_250MS                        00000277
+LOOP_40MS                         00000271
+LOOP_PRIN                         00000057
+MUESTRA_TIME                      000000B2
+NOT_A                             00000005
+NOT_ADDRESS                       00000005
+NOT_BO                            00000000
+NOT_BOR                           00000000
+NOT_DONE                          00000002
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_RC8                           00000006
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+NOT_TX8                           00000006
+NOT_W                             00000002
+NOT_WRITE                         00000002
+NO_HAYTECLA                       000000F0
+OBF                               00000006
+OERR                              00000001
+OPTION_REG                        00000081
+P                                 00000004
+PCFG0                             00000000
+PCFG1                             00000001
+PCFG2                             00000002
+PCFG3                             00000003
+PCL                               00000002
+PCLATH                            0000000A
+PCON                              0000008E
+PEIE                              00000006
+PEN                               00000002
+PIE1                              0000008C
+PIE2                              0000008D
+PIR1                              0000000C
+PIR2                              0000000D
+PORTA                             00000005
+PORTB                             00000006
+PORTC                             00000007
+PORTD                             00000008
+PORTE                             00000009
+PR2                               00000092
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE 31
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+PRESC_1                           00000033
+PRESC_2                           00000034
+PROGA                             0000003C
+PROGB                             000000F0
+PROGC                             00000000
+PROGD                             000000FF
+PROGE                             00000007
+PROG_INI                          0000002B
+PROG_PRIN                         00000055
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+PSPIE                             00000007
+PSPIF                             00000007
+PSPMODE                           00000004
+PULSO_ENABLE                      00000265
+R                                 00000002
+RBIE                              00000003
+RBIF                              00000000
+RC8_9                             00000006
+RC9                               00000006
+RCD8                              00000000
+RCEN                              00000003
+RCIE                              00000005
+RCIF                              00000005
+RCREG                             0000001A
+RCSTA                             00000018
+RD                                00000000
+READ_WRITE                        00000002
+RECTIFICA                         000000A3
+RECTIFICA_TECLA                   00000231
+RENGLON_2                         00000118
+RENGLON_3                         00000133
+RENGLON_4                         0000014E
+RES_FSR                           00000032
+RES_PCLATH                        00000031
+RES_STATUS                        00000030
+RES_W                             00000029
+RETARDO_1MS                       0000026A
+RETARDO_250MS                     00000276
+RETARDO_40MS                      00000270
+RP0                               00000005
+RP1                               00000006
+RSEN                              00000001
+RS_LCD                            00000000
+RUTINA_INT                        00000019
+RX9                               00000006
+RX9D                              00000000
+R_W                               00000002
+S                                 00000003
+SALRUTINA                         00000255
+SAL_BARRETECLADO                  000001B7
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE 32
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+SAL_CONFIGTIME                    0000022F
+SAL_INT                           0000000F
+SAL_LOCO                          000000A2
+SAL_RECTIFICA                     000000B1
+SAL_RUTEXT                        00000028
+SAL_RUTINT                        00000029
+SEN                               00000000
+SIG_INT                           00000020
+SIN_BD4                           00000004
+SIN_BD5                           00000005
+SIN_BD6                           00000006
+SIN_BD7                           00000007
+SIN_USORA2                        00000002
+SIN_USORA3                        00000003
+SIN_USORA4                        00000004
+SIN_USORA5                        00000005
+SIN_USORD0                        00000000
+SIN_USORD1                        00000001
+SIN_USORD2                        00000002
+SIN_USORD3                        00000003
+SIN_USORD4                        00000004
+SIN_USORD5                        00000005
+SIN_USORD6                        00000006
+SIN_USORD7                        00000007
+SIN_USORE0                        00000000
+SIN_USORE1                        00000001
+SIN_USORE2                        00000002
+SMP                               00000007
+SPBRG                             00000099
+SPEN                              00000007
+SREN                              00000005
+SSPADD                            00000093
+SSPBUF                            00000013
+SSPCON                            00000014
+SSPCON2                           00000091
+SSPEN                             00000005
+SSPIE                             00000003
+SSPIF                             00000003
+SSPM0                             00000000
+SSPM1                             00000001
+SSPM2                             00000002
+SSPM3                             00000003
+SSPOV                             00000006
+SSPSTAT                           00000094
+STATUS                            00000003
+SYNC                              00000004
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000010
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE 33
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+T1INSYNC                          00000002
+T1OSCEN                           00000003
+T1SYNC                            00000002
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000012
+TEC_0                             000000D0
+TEC_1                             000000E0
+TEC_2                             000000D0
+TEC_3                             000000B0
+TEC_4                             000000E0
+TEC_5                             000000D0
+TEC_6                             000000B0
+TEC_7                             000000E0
+TEC_8                             000000D0
+TEC_9                             000000B0
+TEC_A                             00000070
+TEC_B                             00000070
+TEC_C                             00000070
+TEC_CLEAR                         000000E0
+TEC_D                             00000070
+TEC_GATO                          000000B0
+TMR0                              00000001
+TMR0IE                            00000005
+TMR0IF                            00000002
+TMR1CS                            00000001
+TMR1H                             0000000F
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2ON                            00000002
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000085
+TRISB                             00000086
+TRISC                             00000087
+TRISD                             00000088
+TRISE                             00000089
+TRISE0                            00000000
+TRISE1                            00000001
+TRISE2                            00000002
+TRMT                              00000001
+TX8_9                             00000006
+TX9                               00000006
+TX9D                              00000000
+TXD8                              00000000
+TXEN                              00000005
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE 34
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TXIE                              00000004
+TXIF                              00000004
+TXREG                             00000019
+TXSTA                             00000098
+UA                                00000001
+UNIDADES_HORA                     000001CD
+UNIDADES_MIN                      000001F1
+UNIDADES_SEG                      00000215
+UNIHOR                            0000023B
+VAR_TECBIN                        00000047
+VAR_TECLADO                       00000045
+VAR_TECOPRI                       00000046
+VEC_INT                           00000004
+VEC_RESET                         00000000
+W                                 00000000
+WCOL                              00000007
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+Z                                 00000002
+_BODEN_OFF                        00003FBF
+_BODEN_ON                         00003FFF
+_CPD_OFF                          00003FFF
+_CPD_ON                           00003EFF
+_CP_ALL                           00001FFF
+_CP_OFF                           00003FFF
+_DEBUG_OFF                        00003FFF
+_DEBUG_ON                         000037FF
+_HS_OSC                           00003FFE
+_LP_OSC                           00003FFC
+_LVP_OFF                          00003F7F
+_LVP_ON                           00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FF7
+_RC_OSC                           00003FFF
+_WDT_OFF                          00003FFB
+_WDT_ON                           00003FFF
+_WRT_1FOURTH                      00003BFF
+_WRT_256                          00003DFF
+_WRT_HALF                         000039FF
+_WRT_OFF                          00003FFF
+_XT_OSC                           00003FFD
+__16F877A                         00000001
+__DEBUG                           1
+MPASM  5.30.01                    PRACTICA 2.ASM   4-6-2021  0:35:09         PAGE 35
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+
+0000 : XX--XXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0040 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0080 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+00C0 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0100 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0140 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0180 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+01C0 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0200 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0240 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXX----
+2000 : -------X-------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:   634
+Program Memory Words Free:  7558
+
+
+Errors   :     0
+Warnings :     4 reported,     0 suppressed
+Messages :     0 reported,     0 suppressed
+
+

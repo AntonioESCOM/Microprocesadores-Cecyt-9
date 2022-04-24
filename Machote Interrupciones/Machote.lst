@@ -1,0 +1,677 @@
+MPASM  5.30.01                       MACHOTE.ASM   3-12-2021  7:36:55         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ; INSTITUTO POLITECNICO NACIONAL.
+                      00002 ; CECYT 9 JUAN DE DIOS BATIZ.
+                      00003 ;
+                      00004 ; PRACTICA 0'.   
+                      00005 ; MANEJO DE UN LED OSCILANDO A 1 Hz.
+                      00006 ;
+                      00007 ; EQUIPO:        GRUPO: 6IMX.
+                      00008 ;
+                      00009 ; INTEGRANTES:
+                      00010 ; 1.-RAMIREZ PACHECO.
+                      00011 ; 2.-RAMIREZ ESTRADA.
+                      00012 ; 3.-VEGA ALTAMIRANO.
+                      00013 ; 4.-YASKAWA SANCHEZ.
+                      00014 ;
+                      00015 ; FECHA DE ENTREGA DEL REPORTE.
+                      00016 ;
+                      00017 ; ESTE PROGRAMA CONTROLA UN LED HACIENDOLO OSCILAR A UNA 
+                      00018 ; FRECUENCIA DE UN SEGUNDO, UTILIZANDO 
+                      00019 ; INTERRUPCIONES CON EL TMR0.
+                      00020 ;
+                      00021 ;--------------------------------------------------------------------------------------------------
+                      00022   LIST    P=16F877A; 
+                      00023   #INCLUDE "c:\Program files (x86)\Microchip\Mpasm Suite\p16f877a.inc";
+                      00001         LIST
+                      00002 ; P16F877A.INC  Standard Header File, Version 1.00    Microchip Technology, Inc.
+                      00400         LIST
+                      00024                                                          
+2007   3F39           00025  __CONFIG _CP_OFF & _WDT_OFF & _BODEN_OFF & _PWRTE_OFF & _XT_OSC & _WRT_OFF & _LVP_OFF & _CPD_OFF;
+                      00026 ;--------------------------------------------------------------------------------------------------
+                      00027 ;
+                      00028 ; Fosc = 4 MHz.
+                      00029 ; Ciclo de trabajo del PIC = (1/fosc)*4 = 1 µs.
+                      00030 ; T int =(256-tmr0)*(P)*((1/4000000)*4) = 1 ms.    // Tiempo de interrupción.
+                      00031 ; tmr0=131,  P=8.
+                      00032 ; frec int = 1/ t int = 1 KHz.
+                      00033 ;----------------------------------------------------------------------------------------------------
+                      00034 ;
+                      00035 ;Def. de variables del programa en RAM.
+  00000020            00036 RESP_W                    EQU    0X20;  //variable para respaldar w
+  00000021            00037 RESP_STATUS            EQU    0X21; // variable para respaldar registro status
+  00000022            00038 RES_PCLATH              EQU    0X22; //variable para respaldar pclath 
+  00000023            00039 RES_FSR                     EQU    0X23;  // variables para respaldar fsr
+  00000024            00040 PRESC_1                   EQU    0X24;            .001   100         5 
+  00000025            00041 PRESC_2                   EQU    0X25; t int = t intb * presc_1 * presc_2
+  00000026            00042 BANDERAS                EQU    0X26;  // registro utilizado para avisar a través de un byte que la inter
+                            rupción de 500ms ya ocurrió 
+  00000027            00043 CONT_MILIS              EQU    0X27;
+                      00044 ;---------------------------------------------------------------------------------------------------
+                      00045 ; Def. de constantes a utilizar.
+                      00046 ; Cod. de caracteres alfanuméricos en 7 segmentos.
+  00000077            00047 CAR_A                   EQU   B'01110111';
+  000000C7            00048 CAR_B                   EQU   0XC7;
+  0000003F            00049 CAR_0                   EQU   0X3F;
+MPASM  5.30.01                       MACHOTE.ASM   3-12-2021  7:36:55         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+  00000006            00050 CAR_1                   EQU   0X06;
+                      00051 ; banderas del registro banderas.
+  00000000            00052 BAN_INT                 EQU     .0;
+  00000001            00053 SIN_BD1                 EQU     .1; 
+  00000002            00054 SIN_BD2                 EQU     .2; 
+  00000003            00055 SIN_BD3                 EQU     .3; 
+  00000004            00056 SIN_BD4                 EQU     .4; 
+  00000005            00057 SIN_BD5                 EQU     .5; 
+  00000006            00058 SIN_BD6                 EQU     .6; 
+  00000007            00059 SIN_BD7                 EQU     .7; 
+                      00060 ;---------------------------------------------------------------------------------------------------
+                      00061 
+                      00062 
+                      00063 
+                      00064 
+                      00065 
+                      00066 
+                      00067 
+                      00068 ; Def. de Ptos. I/0.
+                      00069 ; Puerto A.
+  00000000            00070 SIN_USORA0          EQU     .0;
+  00000001            00071 SIN_USORA1          EQU     .1;
+  00000002            00072 SIN_USORA2          EQU     .2;
+  00000003            00073 SIN_USORA3          EQU     .3;
+  00000004            00074 LED_ROJO               EQU     .4;
+  00000005            00075 SIN_USORA5          EQU     .5;
+                      00076 
+  0000002F            00077 PROGA                     EQU B'101111';Def. la config. de los bits del pto. a.
+                      00078 
+                      00079 ;Puerto B.
+  00000000            00080 SIN_USORB0          EQU     .0;
+  00000001            00081 SIN_USORB1          EQU     .1;
+  00000002            00082 SIN_USORB2          EQU     .2;
+  00000003            00083 SIN_USORB3          EQU     .3;
+  00000004            00084 SIN_USORB4          EQU     .4;
+  00000005            00085 SIN_USORB5          EQU     .5;
+  00000006            00086 SIN_USORB6          EQU     .6;
+  00000007            00087 SIN_USORB7          EQU     .7;
+                      00088 
+  000000FF            00089 PROGB                     EQU B'11111111'; // Programación inicial del puerto B.
+                      00090 
+                      00091 ;Puerto C.
+  00000000            00092 SIN_USORC0              EQU     .0;
+  00000001            00093 SIN_USORC1              EQU     .1;
+  00000002            00094 SIN_USORC2              EQU     .2;
+  00000003            00095 SIN_USORC3              EQU     .3;
+  00000004            00096 SIN_USORC4              EQU     .4;
+  00000005            00097 SIN_USORC5              EQU     .5;
+  00000006            00098 SIN_USORC6              EQU     .6;
+  00000007            00099 SIN_USORC7              EQU     .7;
+                      00100 
+  000000FF            00101 PROGC                   EQU B'11111111'; // Programación inicial del puerto C como 
+Warning[207]: Found label after column 1. (ENTRADA.)
+MPASM  5.30.01                       MACHOTE.ASM   3-12-2021  7:36:55         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0000                  00102                                                                   ENTRADA.
+                      00103 ;Puerto D.
+  00000000            00104 SIN_USORD0              EQU     .0;
+  00000001            00105 SIN_USORD1              EQU     .1;
+  00000002            00106 SIN_USORD2              EQU     .2;
+  00000003            00107 SIN_USORD3              EQU     .3;
+  00000004            00108 SIN_USORD4              EQU     .4;
+  00000005            00109 SIN_USORD5              EQU     .5;
+  00000006            00110 SIN_USORD6              EQU     .6;
+  00000007            00111 SIN_USORD7              EQU     .7;
+                      00112 
+  000000FF            00113 PROGD                   EQU B'11111111';Def. 
+                      00114 
+                      00115 ; Puerto E.
+  00000000            00116 SIN_USORE0              EQU     .0;
+  00000001            00117 SIN_USORE1              EQU     .1;
+  00000002            00118 SIN_USORE2              EQU     .2;
+  00000007            00119 PROGE                   EQU B'111';Def. la encua.
+                      00120 ;-------------------------------------------------------------------------------------------------
+                      00121       
+                      00122                         ;=================
+                      00123                         ;==  Vector Reset   ==
+                      00124                         ;=================
+0000                  00125                         ORG 0000H;
+0000   018A           00126 VEC_RESET       CLRF PCLATH;
+0001   2841           00127                         GOTO PROG_PRIN;
+                      00128 ;-------------------------------------------------------------------------------------------------
+                      00129                   
+                      00130                         ;=============================
+                      00131                         ;== Subrutina de Interrupciones  ==
+                      00132                         ;=============================
+0004                  00133                         ORG 0004H;   
+0004   00A0           00134 VEC_INT           MOVWF RESP_W;resp. esl estado del reg. w. 
+0005   0803           00135                         MOVF STATUS,W;
+0006   00A1           00136                         MOVWF RESP_STATUS;resp. banderas de la alu.
+0007   0183           00137                         CLRF STATUS;
+0008   080A           00138                         MOVF PCLATH,W;
+0009   00A2           00139                         MOVWF RES_PCLATH;
+000A   018A           00140                         CLRF PCLATH;
+000B   0804           00141                         MOVF FSR,W;
+000C   00A3           00142                         MOVWF RES_FSR; 
+                      00143                          
+000D   190B           00144                         BTFSC INTCON,T0IF;
+000E   2019           00145                         CALL RUTINA_INT;
+                      00146                         
+000F   3083           00147 SAL_INT            MOVLW .131;
+0010   0081           00148                         MOVWF TMR0;
+0011   0823           00149                         MOVF RES_FSR,W;
+0012   0084           00150                         MOVWF FSR;
+0013   0822           00151                         MOVF RES_PCLATH,W;
+0014   008A           00152                         MOVWF PCLATH;
+0015   0821           00153                         MOVF RESP_STATUS,W;
+0016   0083           00154                         MOVWF STATUS;
+MPASM  5.30.01                       MACHOTE.ASM   3-12-2021  7:36:55         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0017   0820           00155                         MOVF RESP_W,W;
+                      00156                         
+0018   0009           00157                         RETFIE;
+                      00158 ;--------------------------------------------------------------------------------------------------
+                      00159 
+                      00160 
+                      00161                         ;=============================
+                      00162                         ;== Subrutina de Interrupciones  ==
+                      00163                         ;=============================
+0019   0AA7           00164 RUTINA_INT      INCF CONT_MILIS,F;
+001A   0AA4           00165                         INCF PRESC_1,F;
+                      00166                         
+001B   3064           00167                         MOVLW .100;
+001C   0624           00168                         XORWF PRESC_1,W;
+001D   1903           00169                         BTFSC STATUS,Z;
+001E   2820           00170                         GOTO SIG_INT;
+001F   2829           00171                         GOTO SAL_RUTINT;
+                      00172 
+0020   01A4           00173 SIG_INT            CLRF PRESC_1;
+0021   0AA5           00174                         INCF PRESC_2,F;
+0022   3005           00175                         MOVLW .5;
+0023   0625           00176                         XORWF PRESC_2,W;
+0024   1D03           00177                         BTFSS STATUS,Z;
+0025   2829           00178                         GOTO SAL_RUTINT;
+0026   01A4           00179                         CLRF PRESC_1;
+0027   01A5           00180                         CLRF PRESC_2;
+                      00181                         
+0028   1426           00182 SAL_RUTEXT      BSF BANDERAS,BAN_INT;
+                      00183                                  
+0029   110B           00184 SAL_RUTINT      BCF INTCON,T0IF;
+002A   0008           00185                         RETURN;
+                      00186 ;--------------------------------------------------------------------------------------------------
+                      00187 
+                      00188 
+                      00189 
+                      00190                         ;================================
+                      00191                         ;== Subrutina de Ini. de Reg. del Pic   ==
+                      00192                         ;================================
+002B   1683           00193 PROG_INI         BSF STATUS,RP0; Ponte en el banco 1 de ram.
+002C   3082           00194                         MOVLW 0X82;             // Deshabilitada pull ups y habilitar un preescalador de
+                             8 en el timer 0
+002D   0081           00195                         MOVWF OPTION_REG ^0X80; 
+002E   302F           00196                         MOVLW PROGA;
+002F   0085           00197                         MOVWF TRISA ^0X80;
+0030   30FF           00198                         MOVLW PROGB;
+0031   0086           00199                         MOVWF TRISB ^0X80;
+0032   30FF           00200                         MOVLW PROGC;
+0033   0087           00201                         MOVWF TRISC ^0X80; 
+0034   30FF           00202                         MOVLW PROGD;
+0035   0088           00203                         MOVWF TRISD ^0X80;
+0036   3007           00204                         MOVLW PROGE;
+0037   0089           00205                         MOVWF TRISE ^0X80;
+0038   3006           00206                         MOVLW 0X06;
+MPASM  5.30.01                       MACHOTE.ASM   3-12-2021  7:36:55         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0039   009F           00207                         MOVWF ADCON1 ^0X80;
+003A   1283           00208                         BCF STATUS,RP0; Ponte en el banco 0 de ram.      
+                      00209                            
+003B   30A0           00210                         MOVLW 0XA0;             // Habilita la iterrupcion del TMR0, Las globales y borr
+                            a las banderas de interrupción 
+003C   008B           00211                         MOVWF INTCON;
+                      00212 
+003D   3083           00213                         MOVLW .131;
+003E   0081           00214                         MOVWF TMR0;
+                      00215 
+003F   01A6           00216                        CLRF BANDERAS; 
+0040   0008           00217                        RETURN;
+                      00218 ;--------------------------------------------------------------------------------------------------
+                      00219 
+                      00220 
+                      00221                         ;=====================
+                      00222                         ;== Programa principal  ==
+                      00223                         ;=====================
+0041   202B           00224 PROG_PRIN      CALL PROG_INI;
+0042   2049           00225 LOOP_PRIN      CALL ESP_INT;
+                      00226 
+0043   1E05           00227                         BTFSS PORTA,LED_ROJO;
+0044   2847           00228                         GOTO SEC_LED;
+0045   1205           00229                         BCF PORTA,LED_ROJO; Prende el led.
+0046   2842           00230                         GOTO LOOP_PRIN;
+0047   1605           00231 SEC_LED          BSF PORTA,LED_ROJO; Apaga el led.
+0048   2842           00232                         GOTO LOOP_PRIN;
+                      00233 ;-------------------------------------------------------------------------------------------------- 
+                      00234 
+                      00235                         ;=========================================
+                      00236                         ;== Subrutina de espera de int. de 0.5 segundo  ==
+                      00237                         ;=========================================
+0049   0000           00238 ESP_INT           NOP;
+004A   1C26           00239                         BTFSS BANDERAS,BAN_INT; 
+004B   2849           00240                         GOTO ESP_INT;
+004C   1026           00241                         BCF BANDERAS,BAN_INT;
+                      00242 
+004D   0008           00243                         RETURN;
+                      00244 ;-------------------------------------------------------------------------------------------------- 
+                      00245                         END
+MPASM  5.30.01                       MACHOTE.ASM   3-12-2021  7:36:55         PAGE  6
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ACKDT                             00000005
+ACKEN                             00000004
+ACKSTAT                           00000006
+ADCON0                            0000001F
+ADCON1                            0000009F
+ADCS0                             00000006
+ADCS1                             00000007
+ADCS2                             00000006
+ADDEN                             00000003
+ADFM                              00000007
+ADIE                              00000006
+ADIF                              00000006
+ADON                              00000000
+ADRESH                            0000001E
+ADRESL                            0000009E
+BANDERAS                          00000026
+BAN_INT                           00000000
+BCLIE                             00000003
+BCLIF                             00000003
+BF                                00000000
+BRGH                              00000002
+C                                 00000000
+C1INV                             00000004
+C1OUT                             00000006
+C2INV                             00000005
+C2OUT                             00000007
+CAR_0                             0000003F
+CAR_1                             00000006
+CAR_A                             00000077
+CAR_B                             000000C7
+CCP1CON                           00000017
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCP2CON                           0000001D
+CCP2IE                            00000000
+CCP2IF                            00000000
+CCP2M0                            00000000
+CCP2M1                            00000001
+CCP2M2                            00000002
+CCP2M3                            00000003
+CCP2X                             00000005
+CCP2Y                             00000004
+CCPR1H                            00000016
+CCPR1L                            00000015
+CCPR2H                            0000001C
+CCPR2L                            0000001B
+CHS0                              00000003
+MPASM  5.30.01                       MACHOTE.ASM   3-12-2021  7:36:55         PAGE  7
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+CHS1                              00000004
+CHS2                              00000005
+CIS                               00000003
+CKE                               00000006
+CKP                               00000004
+CM0                               00000000
+CM1                               00000001
+CM2                               00000002
+CMCON                             0000009C
+CMIE                              00000006
+CMIF                              00000006
+CONT_MILIS                        00000027
+CREN                              00000004
+CSRC                              00000007
+CVR0                              00000000
+CVR1                              00000001
+CVR2                              00000002
+CVR3                              00000003
+CVRCON                            0000009D
+CVREN                             00000007
+CVROE                             00000006
+CVRR                              00000005
+D                                 00000005
+DATA_ADDRESS                      00000005
+DC                                00000001
+D_A                               00000005
+EEADR                             0000010D
+EEADRH                            0000010F
+EECON1                            0000018C
+EECON2                            0000018D
+EEDATA                            0000010C
+EEDATH                            0000010E
+EEIE                              00000004
+EEIF                              00000004
+EEPGD                             00000007
+ENTRADA.                          00000000
+ESP_INT                           00000049
+F                                 00000001
+FERR                              00000002
+FSR                               00000004
+GCEN                              00000007
+GIE                               00000007
+GO                                00000002
+GO_DONE                           00000002
+I2C_DATA                          00000005
+I2C_READ                          00000002
+I2C_START                         00000003
+I2C_STOP                          00000004
+IBF                               00000007
+IBOV                              00000005
+INDF                              00000000
+INTCON                            0000000B
+INTE                              00000004
+MPASM  5.30.01                       MACHOTE.ASM   3-12-2021  7:36:55         PAGE  8
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+INTEDG                            00000006
+INTF                              00000001
+IRP                               00000007
+LED_ROJO                          00000004
+LOOP_PRIN                         00000042
+NOT_A                             00000005
+NOT_ADDRESS                       00000005
+NOT_BO                            00000000
+NOT_BOR                           00000000
+NOT_DONE                          00000002
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_RC8                           00000006
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+NOT_TX8                           00000006
+NOT_W                             00000002
+NOT_WRITE                         00000002
+OBF                               00000006
+OERR                              00000001
+OPTION_REG                        00000081
+P                                 00000004
+PCFG0                             00000000
+PCFG1                             00000001
+PCFG2                             00000002
+PCFG3                             00000003
+PCL                               00000002
+PCLATH                            0000000A
+PCON                              0000008E
+PEIE                              00000006
+PEN                               00000002
+PIE1                              0000008C
+PIE2                              0000008D
+PIR1                              0000000C
+PIR2                              0000000D
+PORTA                             00000005
+PORTB                             00000006
+PORTC                             00000007
+PORTD                             00000008
+PORTE                             00000009
+PR2                               00000092
+PRESC_1                           00000024
+PRESC_2                           00000025
+PROGA                             0000002F
+PROGB                             000000FF
+PROGC                             000000FF
+PROGD                             000000FF
+PROGE                             00000007
+PROG_INI                          0000002B
+PROG_PRIN                         00000041
+PS0                               00000000
+PS1                               00000001
+MPASM  5.30.01                       MACHOTE.ASM   3-12-2021  7:36:55         PAGE  9
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+PS2                               00000002
+PSA                               00000003
+PSPIE                             00000007
+PSPIF                             00000007
+PSPMODE                           00000004
+R                                 00000002
+RBIE                              00000003
+RBIF                              00000000
+RC8_9                             00000006
+RC9                               00000006
+RCD8                              00000000
+RCEN                              00000003
+RCIE                              00000005
+RCIF                              00000005
+RCREG                             0000001A
+RCSTA                             00000018
+RD                                00000000
+READ_WRITE                        00000002
+RESP_STATUS                       00000021
+RESP_W                            00000020
+RES_FSR                           00000023
+RES_PCLATH                        00000022
+RP0                               00000005
+RP1                               00000006
+RSEN                              00000001
+RUTINA_INT                        00000019
+RX9                               00000006
+RX9D                              00000000
+R_W                               00000002
+S                                 00000003
+SAL_INT                           0000000F
+SAL_RUTEXT                        00000028
+SAL_RUTINT                        00000029
+SEC_LED                           00000047
+SEN                               00000000
+SIG_INT                           00000020
+SIN_BD1                           00000001
+SIN_BD2                           00000002
+SIN_BD3                           00000003
+SIN_BD4                           00000004
+SIN_BD5                           00000005
+SIN_BD6                           00000006
+SIN_BD7                           00000007
+SIN_USORA0                        00000000
+SIN_USORA1                        00000001
+SIN_USORA2                        00000002
+SIN_USORA3                        00000003
+SIN_USORA5                        00000005
+SIN_USORB0                        00000000
+SIN_USORB1                        00000001
+SIN_USORB2                        00000002
+SIN_USORB3                        00000003
+SIN_USORB4                        00000004
+MPASM  5.30.01                       MACHOTE.ASM   3-12-2021  7:36:55         PAGE 10
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+SIN_USORB5                        00000005
+SIN_USORB6                        00000006
+SIN_USORB7                        00000007
+SIN_USORC0                        00000000
+SIN_USORC1                        00000001
+SIN_USORC2                        00000002
+SIN_USORC3                        00000003
+SIN_USORC4                        00000004
+SIN_USORC5                        00000005
+SIN_USORC6                        00000006
+SIN_USORC7                        00000007
+SIN_USORD0                        00000000
+SIN_USORD1                        00000001
+SIN_USORD2                        00000002
+SIN_USORD3                        00000003
+SIN_USORD4                        00000004
+SIN_USORD5                        00000005
+SIN_USORD6                        00000006
+SIN_USORD7                        00000007
+SIN_USORE0                        00000000
+SIN_USORE1                        00000001
+SIN_USORE2                        00000002
+SMP                               00000007
+SPBRG                             00000099
+SPEN                              00000007
+SREN                              00000005
+SSPADD                            00000093
+SSPBUF                            00000013
+SSPCON                            00000014
+SSPCON2                           00000091
+SSPEN                             00000005
+SSPIE                             00000003
+SSPIF                             00000003
+SSPM0                             00000000
+SSPM1                             00000001
+SSPM2                             00000002
+SSPM3                             00000003
+SSPOV                             00000006
+SSPSTAT                           00000094
+STATUS                            00000003
+SYNC                              00000004
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000010
+T1INSYNC                          00000002
+T1OSCEN                           00000003
+T1SYNC                            00000002
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+MPASM  5.30.01                       MACHOTE.ASM   3-12-2021  7:36:55         PAGE 11
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+T2CON                             00000012
+TMR0                              00000001
+TMR0IE                            00000005
+TMR0IF                            00000002
+TMR1CS                            00000001
+TMR1H                             0000000F
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2ON                            00000002
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000085
+TRISB                             00000086
+TRISC                             00000087
+TRISD                             00000088
+TRISE                             00000089
+TRISE0                            00000000
+TRISE1                            00000001
+TRISE2                            00000002
+TRMT                              00000001
+TX8_9                             00000006
+TX9                               00000006
+TX9D                              00000000
+TXD8                              00000000
+TXEN                              00000005
+TXIE                              00000004
+TXIF                              00000004
+TXREG                             00000019
+TXSTA                             00000098
+UA                                00000001
+VEC_INT                           00000004
+VEC_RESET                         00000000
+W                                 00000000
+WCOL                              00000007
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+Z                                 00000002
+_BODEN_OFF                        00003FBF
+_BODEN_ON                         00003FFF
+_CPD_OFF                          00003FFF
+_CPD_ON                           00003EFF
+_CP_ALL                           00001FFF
+_CP_OFF                           00003FFF
+_DEBUG_OFF                        00003FFF
+_DEBUG_ON                         000037FF
+MPASM  5.30.01                       MACHOTE.ASM   3-12-2021  7:36:55         PAGE 12
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_HS_OSC                           00003FFE
+_LP_OSC                           00003FFC
+_LVP_OFF                          00003F7F
+_LVP_ON                           00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FF7
+_RC_OSC                           00003FFF
+_WDT_OFF                          00003FFB
+_WDT_ON                           00003FFF
+_WRT_1FOURTH                      00003BFF
+_WRT_256                          00003DFF
+_WRT_HALF                         000039FF
+_WRT_OFF                          00003FFF
+_XT_OSC                           00003FFD
+__16F877A                         00000001
+__DEBUG                           1
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : XX--XXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0040 : XXXXXXXXXXXXXX-- ---------------- ---------------- ----------------
+2000 : -------X-------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:    76
+Program Memory Words Free:  8116
+
+
+Errors   :     0
+Warnings :     1 reported,     0 suppressed
+Messages :     0 reported,     0 suppressed
+
+

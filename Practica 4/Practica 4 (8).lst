@@ -1,0 +1,20 @@
+MPASM  5.30.01                PRACTICA 4 (8).ASM   4-30-2021  21:33:51         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Error[129]  : Expected (END)
+MPASM  5.30.01                PRACTICA 4 (8).ASM   4-30-2021  21:33:51         PAGE  2
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+__16F877A                         00000001
+
+Errors   :     1
+Warnings :     0 reported,     0 suppressed
+Messages :     0 reported,     0 suppressed
+
+

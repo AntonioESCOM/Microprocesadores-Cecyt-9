@@ -1,0 +1,76 @@
+MPLINK 4.30.01, Linker
+Linker Map File - Created Thu Mar 18 22:30:45 2021
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x000004
+                   .org_2       code   0x000004    program   0x00021a
+.config_2007_PRACTICA 1.O       code   0x002007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000001      
+                            0x000004    0x000110      
+                            0x002007    0x002007      
+            272 out of 8456 program addresses used, program memory utilization is 3%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+              CUENTA_TIME   0x000052    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+                  ESP_INT   0x0000ea    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+                  INI_LCD   0x0000f0    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+                 LOOP_1MS   0x000105    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+                LOOP_40MS   0x00010b    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+             MUESTRA_TIME   0x0000a3    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+                 PROG_INI   0x00002b    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+                PROG_PRIN   0x000050    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+             PULSO_ENABLE   0x0000ff    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+                RECTIFICA   0x000094    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+              RETARDO_1MS   0x000104    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+             RETARDO_40MS   0x00010a    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+               RUTINA_INT   0x000019    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+                  SAL_INT   0x00000f    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+            SAL_RECTIFICA   0x0000a2    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+               SAL_RUTEXT   0x000028    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+               SAL_RUTINT   0x000029    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+                  SEC_LED   0x000110    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+                  SIG_INT   0x000020    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+                  VEC_INT   0x000004    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+                VEC_RESET   0x000000    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                VEC_RESET   0x000000    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+                  VEC_INT   0x000004    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+                  SAL_INT   0x00000f    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+               RUTINA_INT   0x000019    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+                  SIG_INT   0x000020    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+               SAL_RUTEXT   0x000028    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+               SAL_RUTINT   0x000029    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+                 PROG_INI   0x00002b    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+                PROG_PRIN   0x000050    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+              CUENTA_TIME   0x000052    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+                RECTIFICA   0x000094    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+            SAL_RECTIFICA   0x0000a2    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+             MUESTRA_TIME   0x0000a3    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+                  ESP_INT   0x0000ea    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+                  INI_LCD   0x0000f0    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+             PULSO_ENABLE   0x0000ff    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+              RETARDO_1MS   0x000104    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+                 LOOP_1MS   0x000105    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+             RETARDO_40MS   0x00010a    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+                LOOP_40MS   0x00010b    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+                  SEC_LED   0x000110    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 1\Practica 1.asm
+
+

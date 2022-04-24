@@ -1,0 +1,4 @@
+Warning[205] C:\USERS\ANTON\DOWNLOADS\PRACTICA 2(A).ASM 17 : Found directive in column 1. (LIST)
+Warning[205] C:\USERS\ANTON\DOWNLOADS\PRACTICA 2(A).ASM 27 : Found directive in column 1. (__CONFIG)
+Warning[207] C:\USERS\ANTON\DOWNLOADS\PRACTICA 2(A).ASM 563 : Found label after column 1. (BARRE_TECLADO)
+Message[305] C:\USERS\ANTON\DOWNLOADS\PRACTICA 2(A).ASM 1004 : Using default destination of 1 (file).

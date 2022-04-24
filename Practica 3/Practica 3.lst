@@ -1,0 +1,1253 @@
+MPASM  5.30.01                    PRACTICA 3.ASM   4-18-2021  15:30:43         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;INSTITUTO POLITECNICO NACIONAL
+                      00002 ;CECYT 9 JUAN DE DIOS BATIZ
+                      00003 ;
+                      00004 ;Practica 3.
+                      00005 ;MULTIPLEXADO “MANEJO DE DISPLAYS DE MATRIZ DE PUNTOS”.
+                      00006 ;(ANIMACIÓN DE IMAGENES).
+                      00007 ;
+                      00008 ;GRUPO:6IM2
+                      00009 ;
+                      00010 ;INTEGRANTE
+                      00011 ;Morales Martínez José Antonio
+                      00012 ;
+                      00013 ;El programa mostrara 5 caracteres alfanumericos y posteriormente mostrara
+                      00014 ;Un par de imagenes con animacion haciendo uso de un display matricial de 5x7
+                      00015 ;----------------------------------------------------------------------------------------------------
+                      00016 
+Warning[205]: Found directive in column 1. (LIST)
+                      00017 LIST P=16F877A; // Directiva utilizada para definir el microcontrolador a utilizar
+                      00018 
+                      00019 
+                      00020 #INCLUDE "c:\program files (x86)\microchip\mpasm suite\p16f877a.inc"; 
+                      00001         LIST
+                      00002 ; P16F877A.INC  Standard Header File, Version 1.00    Microchip Technology, Inc.
+                      00400         LIST
+                      00021 
+                      00022 
+                      00023 ;Bits de configuracion
+Warning[205]: Found directive in column 1. (__CONFIG)
+2007   3F31           00024 __CONFIG _XT_OSC & _WDT_OFF & _PWRTE_ON & _BODEN_OFF & _LVP_OFF & _CP_OFF; ALL
+                      00025 
+                      00026 ;------------------------------------------------------------------------------------------------------
+                      00027 ;fosc = 4 Mhz.
+                      00028 ;Ciclo de trabajo del PIC = (1/fosc)*4 = 1us.
+                      00029 ;t int =(256-R)*(P)*((1/4000000)*4) = 1 ms ;// Tiempo de interrupción.
+                      00030 ;R=131, p=8.
+                      00031 ;frec int = 1/ t int = 1Khz.
+                      00032 ;------------------------------------------------------------------------------------------------------
+                      00033 ;
+                      00034 ;Registros de proposito general Banco 0 de Memoria RAM.
+                      00035 ;
+                      00036 ;Registros propios de estructura del programa
+                      00037 
+                      00038 
+  00000023            00039 CTA_UNISEG              EQU                     0X23;   //Registro que se encarga de llevar la cuenta de
+                             las unidades de segundo dentro de la subrutina de muestra_tiempo
+  00000024            00040 CTA_DECSEG              EQU                     0X24;   //Registro que se encarga de llevar la cuenta de
+                             las decenas de segundo dentro de la subrutina de muestra_tiempo
+  00000025            00041 CTA_UNIMIN              EQU                     0X25;   //Registro que se encarga de llevar la cuenta de
+                             las unidades de minuto dentro de la subrutina de muestra_tiempo
+  00000026            00042 CTA_DECMIN      EQU                     0X26;   //Registro que se encarga de llevar la cuenta de las dec
+                            enas de minuto dentro de la subrutina de muestra_tiempo
+  00000027            00043 CTA_UNIHOR              EQU                     0X27;   //Registro que se encarga de llevar la cuenta de
+                             las unidades de hora dentro de la subrutina de muestra_tiempo
+MPASM  5.30.01                    PRACTICA 3.ASM   4-18-2021  15:30:43         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+  00000028            00044 CTA_DECHOR      EQU                     0X28;   //Registro que se encarga de llevar la cuenta de las dec
+                            enas de hora dentro de la subrutina de muestra_tiempo
+                      00045 
+  00000029            00046 RES_W               EQU                 0X29;   //Registro de resplado de la variable W en la subruitna 
+                            de interrupción 
+  00000030            00047 RES_STATUS              EQU                     0X30;   //Registro de resplado de la variable status en 
+                            la subruitna de interrupción
+  00000031            00048 RES_PCLATH              EQU                     0X31;   //Registro de resplado de la variable pclath en 
+                            la subruitna de interrupción
+  00000032            00049 RES_FSR                 EQU                     0X32;   //Registro de resplado de la variable fsr en la 
+                            subruitna de interrupción
+  00000033            00050 PRESC_1                 EQU                     0X33;   //T int= T interrupcion(0.001s)*presc_1 multipli
+                            ca por un escalar al tiempo de interrupcion base
+  00000034            00051 PRESC_2                 EQU                     0X34;   //T int= T interrupcion(0.001s)*presc_1*presc_2 
+                            multiplica por un escalar al tiempo de interrupcion base 
+  00000035            00052 BANDERAS                EQU                     0X35;   //Registro en donde se definen bits banderas (ba
+                            ndera_c, bandera_D, bandera_clear)
+  00000036            00053 CONT_MILIS              EQU                     0X36;   //Registro que lleva la cuenta de las unidades d
+                            e milisegundos (0-255)
+  00000037            00054 CONT_SEG                EQU                     0X37;   //Registro encargado de la cuenta de segundos pa
+                            ra el salto entre caracteres
+  00000038            00055 ANIMACION               EQU                     0X38;   //Registro encargado del ciclo de la animación 
+                      00056 ;-----------------------------------------------------------------------------------------------------
+                      00057 ;Constantes
+                      00058 ;Codigo de los caracteres en el display
+  00000001            00059 ACT_COL11                               EQU     0X01;   //Activa la columna 1 y desactiva las demás 
+  00000002            00060 ACT_COL12                               EQU     0X02;   //Activa la columna 2 y desactiva las demás
+  00000004            00061 ACT_COL13                               EQU     0X04;   //Activa la columna 3 y desactiva las demás
+  00000008            00062 ACT_COL14                               EQU     0X08;   //Activa la columna 4 y desactiva las demás
+  00000010            00063 ACT_COL15                               EQU     0X10;   //Activa la columna 5 y desactiva las demás
+  00000000            00064 DES_COLUMNAS                    EQU     0X00;   //Desactiva todas las columnas del display matricial
+  00000011            00065 ACT_COL11YCOL15                 EQU     0X11;   //Activa la columna 1 y columna 5 desactiva las demás
+  0000000E            00066 ACT_COL12YCOL3YCOL14    EQU             0X0E;   //Activa la columna 2,3 y 4, desactiva las demás
+  0000000A            00067 ACT_COL12YCOL14                 EQU     0X0A;   //Activa la columna 2 y 4, desactiva las demás
+  0000001E            00068 ACT_COL12COL13COL14YCOL15       EQU             0X1E;//Activa la columna 2,3,4 y 5 desactiva las demás
+                      00069 
+                      00070 
+                      00071 
+                      00072 ;Caracter M Mayuscula
+  00000000            00073 CARM_COL11                              EQU             0X00;   X       X
+  000000FD            00074 CARM_COL12                              EQU             0XFD;   X X   X X       
+  000000F3            00075 CARM_COL13                              EQU     0XF3;   X       X   X
+  000000FD            00076 CARM_COL14                              EQU             0XFD;   X       X       X
+  00000000            00077 CARM_COL15                              EQU             0X00;   X       X
+                      00078                                                                         ;       X               X
+                      00079                                                                         ;       X               X
+                      00080 
+                      00081 ;Caracter O Mayuscula
+  000000C1            00082 CARO_COL11                              EQU             0XC1;     X X X 
+  000000BE            00083 CARO_COL12                              EQU             0XBE;   X       X 
+  000000BE            00084 CARO_COL13                              EQU     0XBE;   X           X
+  000000BE            00085 CARO_COL14                              EQU             0XBE;   X               X
+  000000C1            00086 CARO_COL15                              EQU             0XC1;   X       X
+MPASM  5.30.01                    PRACTICA 3.ASM   4-18-2021  15:30:43         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00087                                                                         ;       X               X
+                      00088                                                                         ;         X X X
+                      00089 
+                      00090 ;Caracter R Mayuscula
+  00000000            00091 CARR_COL11                              EQU             0X00;   X X X X
+  000000F6            00092 CARR_COL12                              EQU             0XF6;   X       X       
+  000000E6            00093 CARR_COL13                              EQU     0XE6;   X       X           
+  000000D6            00094 CARR_COL14                              EQU             0XD6;   X X X X         
+  000000B9            00095 CARR_COL15                              EQU             0XB9;   X   X     
+                      00096                                                                         ;       X         X     
+                      00097                                                                         ;       X       X
+                      00098 ;Caracter A Mayuscula
+  00000003            00099 CARA_COL11                              EQU             0X03;       X
+  0000006D            00100 CARA_COL12                              EQU             0X6D;     X   X         
+  0000006E            00101 CARA_COL13                              EQU     0X6E;   X       X           
+  0000006D            00102 CARA_COL14                              EQU             0X6D;   X           X
+  00000003            00103 CARA_COL15                              EQU             0X03;   X X X X X  
+                      00104                                                                         ;       X           X
+                      00105                                                                         ;       X       X 
+                      00106 
+                      00107 ;Caracter L Mayuscula
+  00000000            00108 CARL_COL11                              EQU             0X00;   X
+  000000BF            00109 CARL_COL12                              EQU             0XBF;   X       
+  000000BF            00110 CARL_COL13                              EQU     0XBF;   X                   
+  000000BF            00111 CARL_COL14                              EQU             0XBF;   X           
+  000000BF            00112 CARL_COL15                              EQU             0XBF;   X  
+                      00113                                                                         ;       X           
+                      00114                                                                         ;       X X X X X
+                      00115 
+                      00116 ;Caracter persona con brazos abajo Mayuscula
+  000000EF            00117 CARH1_COL11                             EQU             0XEF;       X
+  00000095            00118 CARH1_COL12                             EQU             0X95;     X   X         
+  000000E2            00119 CARH1_COL13                             EQU     0XE2;       X       
+  00000095            00120 CARH1_COL14                             EQU             0X95;     X X X     
+  000000EF            00121 CARH1_COL15                             EQU             0XEF;    X  X  X
+                      00122                                                                         ;         X       X   
+                      00123                                                                         ;         X   X
+                      00124 
+                      00125 ;Caracter persona con brazos arriba Mayuscula
+  000000BB            00126 CARH2_COL11                             EQU             0XBB;       X
+  000000D5            00127 CARH2_COL12                             EQU             0XD5;     X   X         
+  000000E2            00128 CARH2_COL13                             EQU     0XE2;    X      X  X 
+  000000D5            00129 CARH2_COL14                             EQU             0XD5;     X X X     
+  000000BB            00130 CARH2_COL15                             EQU             0XBB;       X  
+                      00131                                                                         ;         X       X   
+                      00132                                                                         ;        X      X
+                      00133 
+                      00134 
+                      00135 
+                      00136 
+                      00137  
+                      00138  
+                      00139 ;-----------------------------------------------------------------------------------------------------
+MPASM  5.30.01                    PRACTICA 3.ASM   4-18-2021  15:30:43         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00140 
+                      00141 ; banderas del registro banderas.
+  00000000            00142 BAN_INT                 EQU     .0;     //Bit bandera de retardo 1s
+  00000001            00143 BANDERA_D               EQU     .1; //Bit bandera de salida de la subrutina configtime
+  00000002            00144 BANDERA_TECLADO         EQU     .2; //Bit bandera de combrobacion de la variable introducida mediante te
+                            clado
+  00000003            00145 BANDERA_CLEAR               EQU     .3; //Bit bandera de * para borrar LCD
+  00000004            00146 SIN_BD4                 EQU     .4; //Sin Uso bd4.
+  00000005            00147 SIN_BD5                 EQU     .5;     //Sin Uso bd5. 
+  00000006            00148 SIN_BD6                 EQU     .6; //Sin Uso bd6.
+  00000007            00149 SIN_BD7                 EQU     .7; //Sin Uso bd7.
+                      00150 ;-----------------------------------------------------------------------------------------------------
+                      00151 ;Asignacion de los bits de los puertos de I/O.
+                      00152 ;Puerto A.
+  00000000            00153 SIN_USORA0              EQU                     .0; // Sin Uso RA0.
+  00000001            00154 SIN_USORA1              EQU                     .1; // Sin Uso RA1.
+  00000002            00155 SIN_USORA2              EQU                     .2; // Sin Uso RA2.
+  00000003            00156 SIN_USORA3              EQU                     .3; // Sin Uso RA3
+  00000004            00157 SIN_USORA4              EQU                     .4; // Sin Uso RA4.
+  00000005            00158 SIN_USORA5              EQU                     .5; // Sin Uso RA5.
+                      00159 
+  0000003F            00160 PROGA                   EQU     B'111111'; // Programacion Inicial del Puerto A.
+                      00161 
+                      00162 ;Puerto B.
+  00000000            00163 COL_1                   EQU             .0; // Columna 1 del display matricial.
+  00000001            00164 COL_2                   EQU             .1; // Columna 2 del display matricial.
+  00000002            00165 COL_3                   EQU             .2; // Columna 3 del display matricial.
+  00000003            00166 COL_4                   EQU             .3; // Columna 4 del display matricial.
+  00000004            00167 COL_5                   EQU             .4; // Columna 5 del display matricial..
+  00000005            00168 SIN_USORB5              EQU             .5; // Sin Uso RB5.
+  00000006            00169 SIN_USORB6              EQU             .6; // Sin Uso RB6.
+  00000007            00170 SIN_USORB7              EQU             .7; // Sin Uso RB7.
+                      00171                 
+  000000E0            00172 PROGB                   EQU     B'11100000'; // Programacion Inicial del Puerto B.
+                      00173 
+                      00174 ;Puerto C.
+  00000000            00175 REN_1                   EQU                     .0; // Reglon 1 del display matricial
+  00000001            00176 REN_2                   EQU                     .1; // Reglon 2 del display matricial
+  00000002            00177 REN_3                   EQU                     .2; // Reglon 3 del display matricial
+  00000003            00178 REN_4                   EQU                     .3; // Reglon 4 del display matricial
+  00000004            00179 REN_5                   EQU                     .4; // Reglon 5 del display matricial
+  00000005            00180 REN_6                   EQU                     .5; // Reglon 6 del display matricial
+  00000006            00181 REN_7                   EQU                     .6; // Reglon 7 del display matricial
+  00000007            00182 SIN_USORC7              EQU             .7; // Sin Uso RC7.
+                      00183 
+  00000000            00184 PROGC                   EQU     B'00000000'; // Programacion Inicial del Puerto C como Entrada.
+                      00185 
+                      00186 ;Puerto D.
+  00000000            00187 SIN_USORD0              EQU                     .0; // Sin Uso RD0.
+  00000001            00188 SIN_USORD1              EQU                     .1; // Sin Uso RD1.
+  00000002            00189 SIN_USORD2              EQU                     .2; // Sin Uso RD2.
+  00000003            00190 SIN_USORD3              EQU                     .3; // Sin Uso RD3.
+  00000004            00191 SIN_USORD4              EQU                     .4; // Sin Uso RD4.
+MPASM  5.30.01                    PRACTICA 3.ASM   4-18-2021  15:30:43         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+  00000005            00192 SIN_USORD5              EQU                     .5; // Sin Uso RD5.
+  00000006            00193 SIN_USORD6              EQU                     .6; // Sin Uso RD6.
+  00000007            00194 SIN_USORD7              EQU                     .7; // Sin Uso RD7.
+                      00195 
+  000000FF            00196 PROGD                   EQU     B'11111111'; // Programacion Inicial del Puerto D como entradas.
+                      00197 
+                      00198 ;Puerto E.
+  00000000            00199 SIN_USORE0              EQU                     .0; // Sin Uso RE0.
+  00000001            00200 SIN_USORE1              EQU                     .1; // Sin Uso RE1.
+  00000002            00201 SIN_USORE2              EQU                     .2; // Sin Uso RE2.
+                      00202 
+  00000007            00203 PROGE                   EQU     B'111'; // Programacion inicial del Puerto E.
+                      00204 ;-------------------------------------------------------------------------------------------------------
+                            --
+                      00205                                 ;================
+                      00206                                 ;==Vector Reset==
+                      00207                                 ;================
+0000                  00208                                 ORG 0X0000;                             // dirección de inicio de la mem
+                            oria donde el IDE comenzara a ensamblar
+0000   018A           00209 VEC_RESET               CLRF PCLATH;                    // Limpia el registro PCLATH
+0001   2848           00210                                 GOTO PROG_PRIN;                 // ve para la etiqueta prog_ini
+                      00211 ;-------------------------------------------------------------------------------------------------------
+                            --
+                      00212                         ;=============================
+                      00213                         ;== Subrutina de Interrupciones  ==
+                      00214                         ;=============================
+0004                  00215                  ORG 0004H;                     //direccion de memoria donde se encuentra la subrtuina d
+                            e servicio de interrupcion  
+0004   00A9           00216 VEC_INT                  MOVWF RES_W;                   //Respaldar el estado del registro w
+0005   0803           00217                  MOVF STATUS,W;                 //Mover el contenido del registro status a el registro d
+                            e trabajo
+0006   00B0           00218                  MOVWF RES_STATUS;              //Respaldar las banderas de la alu
+0007   0183           00219                  CLRF STATUS;                   //Limpia el registro STATUS
+0008   080A           00220                  MOVF PCLATH,W;                 //Mover el contenido del registro res_pclath a el regist
+                            ro de trabajo
+0009   00B1           00221                  MOVWF RES_PCLATH;              //Respaldar el estado del registro pclath               
+000A   018A           00222                  CLRF PCLATH;                   //Limpia el registro pclath
+000B   0804           00223                  MOVF FSR,W;                    //Mover el contenido del registro res_fsr a el registro 
+                            de trabajo
+000C   00B2           00224                  MOVWF RES_FSR;                 //Respaldar el estado del registro fsr  
+                      00225                          
+000D   190B           00226                  BTFSC INTCON,T0IF;             //Si el bit t0if del registro intcon es igual a 0 salta
+000E   2019           00227                  CALL RUTINA_INT;               //LLamada a la subrutina de interrupciones
+                      00228                         
+000F   3083           00229 SAL_INT                  MOVLW .131;                    //Mover la constante 131 al registro de trabajo
+0010   0081           00230                  MOVWF TMR0;                    //Mover el contenido del registro de trabajo al registro
+                             tmr0
+0011   0832           00231                  MOVF RES_FSR,W;                //Mover el contenido del respaldo res_fsr a el registro 
+                            de trabajo
+0012   0084           00232                  MOVWF FSR;                             //Mover el contenido del registro de trabajo al 
+                            registro far
+0013   0831           00233                  MOVF RES_PCLATH,W;             //Mover el contenido del respaldo res_pclath a el regist
+                            ro de trabajo
+MPASM  5.30.01                    PRACTICA 3.ASM   4-18-2021  15:30:43         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0014   008A           00234                  MOVWF PCLATH;                  //Mover el contenido del registro de trabajo al registro
+                             pclath
+0015   0830           00235                  MOVF RES_STATUS,W;             //Mover el contenido del respaldo res_status a el regist
+                            ro de trabajo
+0016   0083           00236                  MOVWF STATUS;                  //Mover el contenido del registro de trabajo al registro
+                             status
+0017   0829           00237                  MOVF RES_W,W;                  //Mover el contenido del respaldo res_w a el registro de
+                             trabajo
+                      00238                         
+0018   0009           00239                  RETFIE;                                //Regresar al programa principal
+                      00240 ;--------------------------------------------------------------------------------------------------
+                      00241 
+                      00242 
+                      00243                         ;=============================
+                      00244                         ;== Subrutina de Interrupciones  ==
+                      00245                         ;=============================
+0019   0AB6           00246 RUTINA_INT      INCF CONT_MILIS,F;              //Incrementa la variable cont milis en una unidad y guar
+                            da en el mismo registro
+001A   0AB3           00247                 INCF PRESC_1,F;                 //Incrementa la variable presc 1 en una unidad y guarda 
+                            en el mismo registro
+                      00248                         
+001B   3064           00249                 MOVLW .100;                             //Mover la constante 100 al registro de trabajo
+001C   0633           00250                 XORWF PRESC_1,W;                //XOR entre registro presc 1 y el registro de trabajo
+001D   1903           00251                 BTFSC STATUS,Z;                 //Si el bit z del registro status es igual a 0 salta
+001E   2820           00252                 GOTO SIG_INT;                   //Ve para la etiqueta sig_int
+001F   282A           00253                 GOTO SAL_RUTINT;                //Ve para la etiqueta sal_rutint
+                      00254 
+0020   01B3           00255 SIG_INT    CLRF PRESC_1;                        //Limpia el registro presc 1
+0021   0AB4           00256                 INCF PRESC_2,F;                 //Incrementa la variable presc 2 y guarda en el mismo re
+                            gistro
+0022   300A           00257                 MOVLW .10;                              //Mover la constante 10 al registro de trabajo
+0023   0634           00258                 XORWF PRESC_2,W;                //XOR entre registro presc 2 y el registro de trabajo
+0024   1D03           00259                 BTFSS STATUS,Z;                 //Si el bit z del registro status es igual a 1 salta
+0025   282A           00260                 GOTO SAL_RUTINT;                //Ve para la etiqueta sal_rutint
+0026   01B3           00261                 CLRF PRESC_1;                   //Limpia el registro presc 1
+0027   01B4           00262                 CLRF PRESC_2;                   //Limpia el registro presc 2
+                      00263 
+0028   0AB7           00264                                 INCF CONT_SEG,F;                //Incrementa la variable cont_seg en una
+                             unidad y guarda en el mismo registro                             
+0029   1435           00265 SAL_RUTEXT      BSF BANDERAS,BAN_INT;   //Pon a 1 el bit ban int del registro banderas(retardo 1s)
+                      00266                                  
+002A   110B           00267 SAL_RUTINT      BCF INTCON,T0IF;                //Pon a 0 el bit bandera t0if puesto a 1 por la interrup
+                            cion
+002B   0008           00268                 RETURN;                                 //Regresar al programa principal
+                      00269 ;-------------------------------------------------------------------------------------------------------
+                            --      
+                      00270 
+                      00271 
+                      00272                                 ;=======================
+                      00273                                 ;==Subrutina de inicio==
+                      00274                                 ;=======================
+002C   1683           00275 PROG_INI                BSF STATUS,RP0;                 //Coloca al programa  en el bco. 1 de ram
+002D   3002           00276                                 MOVLW 0X02;                             // Mueve la constante 0X02 al re
+MPASM  5.30.01                    PRACTICA 3.ASM   4-18-2021  15:30:43         PAGE  7
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                            gistro w
+002E   0081           00277                                 MOVWF OPTION_REG ^0X80; // Configura el preescalador y activa los pull-u
+                            p
+002F   303F           00278                                 MOVLW PROGA;                    // Mueve el contenido de w a el registro
+                             proga
+0030   0085           00279                                 MOVWF TRISA ^0X80;              // Mueve la constante 0X80 al registro T
+                            RISA
+0031   30E0           00280                                 MOVLW PROGB;                    // Mueve el contenido de w a el registro
+                             progb
+0032   0086           00281                                 MOVWF TRISB ^0X80;              // Mueve la constante 0X80 al registro T
+                            RISB
+0033   3000           00282                                 MOVLW PROGC;                    // Mueve el contenido de w a el registro
+                             progc
+0034   0087           00283                                 MOVWF TRISC ^0X80;              // Mueve la constante 0X80 al registro T
+                            RISC
+0035   30FF           00284                                 MOVLW PROGD;                    // Mueve el contenido de w a el registro
+                             progd
+0036   0088           00285                                 MOVWF TRISD ^0X80;              // Mueve la constante 0X80 al registro T
+                            RISD
+0037   3007           00286                                 MOVLW PROGE;                    // Mueve el contenido de w a el registro
+                             proge
+0038   0089           00287                                 MOVWF TRISE ^0X80;              // Mueve la constante 0X80 al registro T
+                            RISE
+0039   3006           00288                                 MOVLW 0X06;                             // Mueve la constante 0X06 al re
+                            gistro w
+003A   009F           00289                                 MOVWF ADCON1 ^0X80;             // Mueve la constante 0X80 al registro A
+                            DCON1
+003B   1283           00290                                 BCF     STATUS,RP0;                     //regresa al bco. 0 de ram
+                      00291 
+                      00292                         
+003C   30A0           00293                 MOVLW 0XA0;                             // Habilita la interrupcion del TMR0, Las global
+                            es y borra las banderas de interrupción 
+003D   008B           00294                 MOVWF INTCON;                   //Mover el contenido del registro de trabajo al registro
+                             intcon
+003E   3083           00295                 MOVLW .131;                             //Mover la constante 131 al registro de trabajo
+003F   0081           00296                 MOVWF TMR0;                             //Carga a tmr0 la constante 131 desde donde inic
+                            iará la cuenta                          
+0040   01A9           00297                                 CLRF RES_W;                             //Limpia el registro res w
+0041   01B0           00298                                 CLRF RES_STATUS;                //Limpia el registro res status
+0042   01B1           00299                                 CLRF RES_PCLATH;                //Limpia el registro res pclath
+0043   01B2           00300                                 CLRF RES_FSR;                   //Limpia el registro res fsr
+0044   01B3           00301                                 CLRF PRESC_1;                   //Limpia el registro presc 1
+0045   01B4           00302                                 CLRF PRESC_2;                   //Limpia el registro presc 2
+0046   0186           00303                 CLRF PORTB;                             //Limpia el registro puerto B 
+0047   0008           00304                                 RETURN;                                 //Regresa de la subrutina de ini
+                            cializacion
+                      00305 ;-------------------------------------------------------------------------------------------------------
+                            ---
+                      00306 
+                      00307                                 ;======================
+                      00308                                 ;==Programa Principal==
+                      00309                                 ;======================
+0048   202C           00310 PROG_PRIN               CALL PROG_INI;                  //Llamada a la subrutina de inicio 
+MPASM  5.30.01                    PRACTICA 3.ASM   4-18-2021  15:30:43         PAGE  8
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00311 
+0049   01B7           00312 LOOP                    CLRF CONT_SEG;                  //Limpia el registro contador de segundos
+004A   3011           00313 LOOP_M                  MOVLW ACT_COL11YCOL15;  //Carga a w la constante que activa la columna 1 y 5
+004B   0086           00314                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+004C   3000           00315                                 MOVLW CARM_COL11;               //Carga a w la constante para representa
+                            r M en la columna 1 y 5
+004D   0087           00316                                 MOVWF PORTC;                    //Mueve al puerto C el contenido de w
+004E   2102           00317                                 CALL RETARDO;                   //Llama a la subrutina de retardo
+004F   0186           00318                                 CLRF PORTB;                             //Limpia el registro puerto B
+0050   2102           00319                                 CALL RETARDO;                   //Llama a la subrutina de retardo
+                      00320 
+0051   300A           00321                                 MOVLW ACT_COL12YCOL14;  //Carga a w la constante que activa la columna 2
+                             y 4
+0052   0086           00322                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+0053   30FD           00323                                 MOVLW CARM_COL12;               //Carga a w la constante para representa
+                            r M en la columna 2 y 4 
+0054   0087           00324                                 MOVWF PORTC;                    //Mueve al puerto C el contenido de w
+0055   2102           00325                                 CALL RETARDO;                   //Llama a la subrutina de retardo
+0056   3000           00326                                 MOVLW DES_COLUMNAS;             //Carga a w el codigo de desactivacion d
+                            e columnas
+0057   0086           00327                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+0058   2102           00328                                 CALL RETARDO;                   //Llama a la subrutina de retardo
+                      00329 
+0059   3004           00330                                 MOVLW ACT_COL13;                //Carga a w la constante que activa la c
+                            olumna 3
+005A   0086           00331                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+005B   30F3           00332                                 MOVLW CARM_COL13;               //Carga a w la constante para representa
+                            r M en la columna 3
+005C   0087           00333                                 MOVWF PORTC;                    //Mueve al puerto C el contenido de w
+005D   2102           00334                                 CALL RETARDO;                   //Llama a la subrutina de retardo
+005E   3000           00335                                 MOVLW DES_COLUMNAS;             //Carga a w el codigo de desactivacion d
+                            e columnas
+005F   0086           00336                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+0060   2102           00337                                 CALL RETARDO;                   //Llama a la subrutina de retardo
+                      00338 
+0061   3005           00339                                 MOVLW .5;                               //Carga a w la constante 5 decim
+                            al que representa los 5s de espera entre cambio de caracter
+0062   0237           00340                                 SUBWF CONT_SEG,W;               //Resta entre el contenido de cont_seg y
+                             5
+0063   1D03           00341                                 BTFSS STATUS,Z;                 //Si el bit z del registro status es igu
+                            al a 1 salta
+0064   284A           00342                                 GOTO LOOP_M;                    //Loop del caracter M
+                      00343 ;-------------------------------------------------------------------------------------------------------
+                            ---
+                      00344 
+0065   01B7           00345                                 CLRF CONT_SEG;                  //Limpia el registro contador de segundo
+                            s
+0066                  00346 LOOP_O          
+0066   3011           00347                                 MOVLW ACT_COL11YCOL15;  //Carga a w la constante que activa la columna 1
+                             y 5
+0067   0086           00348                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+0068   30C1           00349                                 MOVLW CARO_COL11;               //Carga a w la constante para representa
+                            r O en la columna 1 y 5
+MPASM  5.30.01                    PRACTICA 3.ASM   4-18-2021  15:30:43         PAGE  9
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0069   0087           00350                                 MOVWF PORTC;                    //Mueve al puerto C el contenido de w
+006A   2102           00351                                 CALL RETARDO;                   //Llama a la subrutina de retardo
+006B   0186           00352                                 CLRF PORTB;                             //Limpia el registro puerto B
+                      00353                                 
+                      00354 
+006C   300E           00355                                 MOVLW ACT_COL12YCOL3YCOL14;//Carga a w la constante que activa la column
+                            a 2,3 y 4
+006D   0086           00356                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w   
+006E   30BE           00357                                 MOVLW CARO_COL12;               //Carga a w la constante para representa
+                            r O en la columna 2,3 y 4
+006F   0087           00358                                 MOVWF PORTC;                    //Mueve al puerto C el contenido de w
+0070   2102           00359                                 CALL RETARDO;                   //Llama a la subrutina de retardo
+0071   3000           00360                                 MOVLW DES_COLUMNAS;             //Carga a w el codigo de desactivacion d
+                            e columnas
+0072   0086           00361                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+                      00362                 
+                      00363 
+0073   3005           00364                                 MOVLW .5;                               //Carga a w la constante 5 decim
+                            al que representa los 5s de espera entre cambio de caracter
+0074   0237           00365                                 SUBWF CONT_SEG,W;               //Resta entre el contenido de cont_seg y
+                             5
+0075   1D03           00366                                 BTFSS STATUS,Z;                 //Si el bit z del registro status es igu
+                            al a 1 salta
+0076   2866           00367                                 GOTO LOOP_O;                    //Loop del caracter O
+                      00368 ;-------------------------------------------------------------------------------------------------------
+                            ---
+                      00369                 
+0077   01B7           00370                                 CLRF CONT_SEG;                  //Limpia el registro contador de segundo
+                            s               
+0078   3001           00371 LOOP_R                  MOVLW ACT_COL11;                //Carga a w la constante que activa la columna 1
+                             
+0079   0086           00372                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+007A   3000           00373                                 MOVLW CARR_COL11;               //Carga a w la constante para representa
+                            r R en la columna 1
+007B   0087           00374                                 MOVWF PORTC;                    //Mueve al puerto C el contenido de w
+007C   2102           00375                                 CALL RETARDO;                   //Llama a la subrutina de retardo
+007D   0186           00376                                 CLRF PORTB;                             //Limpia el registro puerto B
+                      00377                                 
+007E   3002           00378                                 MOVLW ACT_COL12;                //Carga a w la constante que activa la c
+                            olumna 2
+007F   0086           00379                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w   
+0080   30F6           00380                                 MOVLW CARR_COL12;               //Carga a w la constante para representa
+                            r O en la columna 2
+0081   0087           00381                                 MOVWF PORTC;                    //Mueve al puerto C el contenido de w
+0082   2102           00382                                 CALL RETARDO;                   //Llama a la subrutina de retardo
+0083   3000           00383                                 MOVLW DES_COLUMNAS;             //Carga a w el codigo de desactivacion d
+                            e columnas
+0084   0086           00384                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+                      00385 
+0085   3004           00386                                 MOVLW ACT_COL13;                //Carga a w la constante que activa la c
+                            olumna 3
+0086   0086           00387                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w   
+0087   30E6           00388                                 MOVLW CARR_COL13;               //Carga a w la constante para representa
+MPASM  5.30.01                    PRACTICA 3.ASM   4-18-2021  15:30:43         PAGE 10
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                            r O en la columna 3
+0088   0087           00389                                 MOVWF PORTC;                    //Mueve al puerto C el contenido de w
+0089   2102           00390                                 CALL RETARDO;                   //Llama a la subrutina de retardo
+008A   3000           00391                                 MOVLW DES_COLUMNAS;             //Carga a w el codigo de desactivacion d
+                            e columnas
+008B   0086           00392                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+                      00393 
+008C   3008           00394                                 MOVLW ACT_COL14;                //Carga a w la constante que activa la c
+                            olumna 4
+008D   0086           00395                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w   
+008E   30D6           00396                                 MOVLW CARR_COL14;               //Carga a w la constante para representa
+                            r O en la columna 4
+008F   0087           00397                                 MOVWF PORTC;                    //Mueve al puerto C el contenido de w
+0090   2102           00398                                 CALL RETARDO;                   //Llama a la subrutina de retardo
+0091   3000           00399                                 MOVLW DES_COLUMNAS;             //Carga a w el codigo de desactivacion d
+                            e columnas
+0092   0086           00400                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+                      00401 
+0093   3010           00402                                 MOVLW ACT_COL15;                //Carga a w la constante que activa la c
+                            olumna 5
+0094   0086           00403                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w   
+0095   30B9           00404                                 MOVLW CARR_COL15;               //Carga a w la constante para representa
+                            r O en la columna 5
+0096   0087           00405                                 MOVWF PORTC;                    //Mueve al puerto C el contenido de w
+0097   2102           00406                                 CALL RETARDO;                   //Llama a la subrutina de retardo
+0098   3000           00407                                 MOVLW DES_COLUMNAS;             //Carga a w el codigo de desactivacion d
+                            e columnas
+0099   0086           00408                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+                      00409 
+009A   3005           00410                                 MOVLW .5;                               //Carga a w la constante 5 decim
+                            al que representa los 5s de espera entre cambio de caracter
+009B   0237           00411                                 SUBWF CONT_SEG,W;               //Resta entre el contenido de cont_seg y
+                             5
+009C   1D03           00412                                 BTFSS STATUS,Z;                 //Si el bit z del registro status es igu
+                            al a 1 salta
+009D   2878           00413                                 GOTO LOOP_R;                    //Loop del caracter O
+                      00414 ;-------------------------------------------------------------------------------------------------------
+                            ---             
+                      00415                         
+009E   01B7           00416                                 CLRF CONT_SEG;                  //Limpia el registro contador de segundo
+                            s
+009F   3011           00417 LOOP_A                  MOVLW ACT_COL11YCOL15;  //Carga a w la constante que activa la columna 1 y 5
+00A0   0086           00418                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+00A1   3003           00419                                 MOVLW CARA_COL11;               //Carga a w la constante para representa
+                            r A en la columna 1 y 5
+00A2   0087           00420                                 MOVWF PORTC;                    //Mueve al puerto C el contenido de w
+00A3   2102           00421                                 CALL RETARDO;                   //Llama a la subrutina de retardo
+00A4   0186           00422                                 CLRF PORTB;                             //Limpia el registro puerto B
+                      00423 
+00A5   300A           00424                                 MOVLW ACT_COL12YCOL14;  //Carga a w la constante que activa la columna 2
+                             y 4
+00A6   0086           00425                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+00A7   306D           00426                                 MOVLW CARA_COL12;               //Carga a w la constante para representa
+MPASM  5.30.01                    PRACTICA 3.ASM   4-18-2021  15:30:43         PAGE 11
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                            r A en la columna 2 y 4 
+00A8   0087           00427                                 MOVWF PORTC;                    //Mueve al puerto C el contenido de w
+00A9   2102           00428                                 CALL RETARDO;                   //Llama a la subrutina de retardo
+00AA   3000           00429                                 MOVLW DES_COLUMNAS;             //Carga a w el codigo de desactivacion d
+                            e columnas
+00AB   0086           00430                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+                      00431 
+00AC   3004           00432                                 MOVLW ACT_COL13;                //Carga a w la constante que activa la c
+                            olumna 3
+00AD   0086           00433                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+00AE   306E           00434                                 MOVLW CARA_COL13;               //Carga a w la constante para representa
+                            r A en la columna 3
+00AF   0087           00435                                 MOVWF PORTC;                    //Mueve al puerto C el contenido de w
+00B0   2102           00436                                 CALL RETARDO;                   //Llama a la subrutina de retardo
+00B1   3000           00437                                 MOVLW DES_COLUMNAS;             //Carga a w el codigo de desactivacion d
+                            e columnas
+00B2   0086           00438                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+                      00439 
+00B3   3005           00440                                 MOVLW .5;                               //Carga a w la constante 5 decim
+                            al que representa los 5s de espera entre cambio de caracter
+00B4   0237           00441                                 SUBWF CONT_SEG,W;               //Resta entre el contenido de cont_seg y
+                             5
+00B5   1D03           00442                                 BTFSS STATUS,Z;                 //Si el bit z del registro status es igu
+                            al a 1 salta
+00B6   289F           00443                                 GOTO LOOP_A;                    //Loop del caracter M
+                      00444 ;-------------------------------------------------------------------------------------------------------
+                            ---
+                      00445 
+00B7   01B7           00446                                 CLRF CONT_SEG;                  //Limpia el registro contador de segundo
+00B8   3001           00447 LOOP_L                  MOVLW ACT_COL11;                //Carga a w la constante que activa la columna 1
+                             
+00B9   0086           00448                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+00BA   3000           00449                                 MOVLW CARL_COL11;               //Carga a w la constante para representa
+                            r L en la columna 1 
+00BB   0087           00450                                 MOVWF PORTC;                    //Mueve al puerto C el contenido de w
+00BC   2102           00451                                 CALL RETARDO;                   //Llama a la subrutina de retardo
+00BD   0186           00452                                 CLRF PORTB;                             //Limpia el registro puerto B
+                      00453 
+00BE   301E           00454                                 MOVLW ACT_COL12COL13COL14YCOL15;        //Carga a w la constante que act
+                            iva la columna 2 y 4
+00BF   0086           00455                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+00C0   30BF           00456                                 MOVLW CARL_COL12;               //Carga a w la constante para representa
+                            r L en la columna 2 y 4 
+00C1   0087           00457                                 MOVWF PORTC;                    //Mueve al puerto C el contenido de w
+00C2   2102           00458                                 CALL RETARDO;                   //Llama a la subrutina de retardo
+00C3   3000           00459                                 MOVLW DES_COLUMNAS;             //Carga a w el codigo de desactivacion d
+                            e columnas
+00C4   0086           00460                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+                      00461 
+00C5   3005           00462                                 MOVLW .5;                               //Carga a w la constante 5 decim
+                            al que representa los 5s de espera entre cambio de caracter
+00C6   0237           00463                                 SUBWF CONT_SEG,W;               //Resta entre el contenido de cont_seg y
+                             5
+MPASM  5.30.01                    PRACTICA 3.ASM   4-18-2021  15:30:43         PAGE 12
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+00C7   1D03           00464                                 BTFSS STATUS,Z;                 //Si el bit z del registro status es igu
+                            al a 1 salta
+00C8   28B8           00465                                 GOTO LOOP_L;                    //Loop del caracter M
+                      00466                                 
+                      00467 ;-------------------------------------------------------------------------------------------------------
+                            ---
+                      00468                         
+                      00469                         
+00C9                  00470 LOOP_ANIMACION
+00C9   01B7           00471                                 CLRF CONT_SEG;//Limpia el registro contador de segundos
+00CA   3011           00472 LOOP_MU1                MOVLW ACT_COL11YCOL15;  //Carga a w la constante que activa la columna 1 y 5
+00CB   0086           00473                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+00CC   30EF           00474                                 MOVLW CARH1_COL11;              //Carga a w la constante para representa
+                            r H1 en la columna 1 y 5
+00CD   0087           00475                                 MOVWF PORTC;                    //Mueve al puerto C el contenido de w
+00CE   2102           00476                                 CALL RETARDO;                   //Llama a la subrutina de retardo
+00CF   0186           00477                                 CLRF PORTB;                             //Limpia el registro puerto B
+                      00478 
+00D0   300A           00479                                 MOVLW ACT_COL12YCOL14;  //Carga a w la constante que activa la columna 2
+                             y 4
+00D1   0086           00480                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+00D2   3095           00481                                 MOVLW CARH1_COL12;              //Carga a w la constante para representa
+                            r H1 en la columna 2 y 4 
+00D3   0087           00482                                 MOVWF PORTC;                    //Mueve al puerto C el contenido de w
+00D4   2102           00483                                 CALL RETARDO;                   //Llama a la subrutina de retardo
+00D5   3000           00484                                 MOVLW DES_COLUMNAS;             //Carga a w el codigo de desactivacion d
+                            e columnas
+00D6   0086           00485                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+                      00486 
+00D7   3004           00487                                 MOVLW ACT_COL13;                //Carga a w la constante que activa la c
+                            olumna 3
+00D8   0086           00488                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+00D9   30E2           00489                                 MOVLW CARH1_COL13;              //Carga a w la constante para representa
+                            r A en la columna 3
+00DA   0087           00490                                 MOVWF PORTC;                    //Mueve al puerto C el contenido de w
+00DB   2102           00491                                 CALL RETARDO;                   //Llama a la subrutina de retardo
+00DC   3000           00492                                 MOVLW DES_COLUMNAS;             //Carga a w el codigo de desactivacion d
+                            e columnas
+00DD   0086           00493                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+                      00494 
+00DE   3001           00495                                 MOVLW .1;                               //Carga a w la constante 5 decim
+                            al que representa los 5s de espera entre cambio de caracter
+00DF   0237           00496                                 SUBWF CONT_SEG,W;               //Resta entre el contenido de cont_seg y
+                             5
+00E0   1D03           00497                                 BTFSS STATUS,Z;                 //Si el bit z del registro status es igu
+                            al a 1 salta
+00E1   28CA           00498                                 GOTO LOOP_MU1;                  //Loop del caracter M
+                      00499 
+                      00500 ;-------------------------------------------------------------------------------------------------------
+                            ---
+                      00501 
+00E2   01B7           00502                                 CLRF CONT_SEG;                  //Limpia el registro contador de segundo
+                            s
+MPASM  5.30.01                    PRACTICA 3.ASM   4-18-2021  15:30:43         PAGE 13
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+00E3   3011           00503 LOOP_MU2                MOVLW ACT_COL11YCOL15;  //Carga a w la constante que activa la columna 1 y 5
+00E4   0086           00504                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+00E5   30BB           00505                                 MOVLW CARH2_COL11;              //Carga a w la constante para representa
+                            r H1 en la columna 1 y 5
+00E6   0087           00506                                 MOVWF PORTC;                    //Mueve al puerto C el contenido de w
+00E7   2102           00507                                 CALL RETARDO;                   //Llama a la subrutina de retardo
+00E8   0186           00508                                 CLRF PORTB;                             //Limpia el registro puerto B
+                      00509 
+00E9   300A           00510                                 MOVLW ACT_COL12YCOL14;  //Carga a w la constante que activa la columna 2
+                             y 4
+00EA   0086           00511                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+00EB   30D5           00512                                 MOVLW CARH2_COL12;              //Carga a w la constante para representa
+                            r H1 en la columna 2 y 4 
+00EC   0087           00513                                 MOVWF PORTC;                    //Mueve al puerto C el contenido de w
+00ED   2102           00514                                 CALL RETARDO;                   //Llama a la subrutina de retardo
+00EE   3000           00515                                 MOVLW DES_COLUMNAS;             //Carga a w el codigo de desactivacion d
+                            e columnas
+00EF   0086           00516                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+                      00517 
+00F0   3004           00518                                 MOVLW ACT_COL13;                //Carga a w la constante que activa la c
+                            olumna 3
+00F1   0086           00519                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+00F2   30E2           00520                                 MOVLW CARH2_COL13;              //Carga a w la constante para representa
+                            r A en la columna 3
+00F3   0087           00521                                 MOVWF PORTC;                    //Mueve al puerto C el contenido de w
+00F4   2102           00522                                 CALL RETARDO;                   //Llama a la subrutina de retardo
+00F5   3000           00523                                 MOVLW DES_COLUMNAS;             //Carga a w el codigo de desactivacion d
+                            e columnas
+00F6   0086           00524                                 MOVWF PORTB;                    //Mueve al puerto B el contenido de w
+                      00525 
+00F7   3001           00526                                 MOVLW .1;                               //Carga a w la constante 5 decim
+                            al que representa los 5s de espera entre cambio de caracter
+00F8   0237           00527                                 SUBWF CONT_SEG,W;               //Resta entre el contenido de cont_seg y
+                             5
+00F9   1D03           00528                                 BTFSS STATUS,Z;                 //Si el bit z del registro status es igu
+                            al a 1 salta
+00FA   28E3           00529                                 GOTO LOOP_MU2;                  //Loop del caracter M
+                      00530 
+00FB   0AB8           00531                                 INCF ANIMACION,F;               //Incrementa en una unidad el registro a
+                            nimacion, encargado del ciclo de la animacion
+00FC   3005           00532                                 MOVLW .5;
+00FD   0238           00533                                 SUBWF ANIMACION,W;              //Resta entre el contenido de 5 y el reg
+                            istro animacion
+00FE   1D03           00534                                 BTFSS STATUS,Z;                 //Si el bit z del registro status es igu
+                            al a 1 salta
+00FF   28C9           00535                                 GOTO LOOP_ANIMACION;                    //Loop del caracter M
+                      00536 
+                      00537                         
+0100   01B8           00538                                 CLRF ANIMACION;
+0101   2849           00539                                 GOTO LOOP;
+                      00540 ;-------------------------------------------------------------------------------------------------------
+                            ---
+                      00541 
+MPASM  5.30.01                    PRACTICA 3.ASM   4-18-2021  15:30:43         PAGE 14
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00542                                 ;==============================
+                      00543                                 ;==Subrutina de retardo de 2ms=
+                      00544                                 ;==============================
+                      00545 
+0102   01B6           00546 RETARDO                 CLRF CONT_MILIS;                //Limpia el registro cont milis         
+0103   3003           00547 LOOP_2MS                MOVLW .3;                               //Mueve la constante 1 al registro de tr
+                            abajo 
+0104   0636           00548                                 XORWF CONT_MILIS,W;             //Resta entre el registro cont milis men
+                            os el registro de trabajo
+0105   1D03           00549                                 BTFSS STATUS,Z;                 //Si el bit Z del registro STATUS es igu
+                            al a 1 salta
+0106   2903           00550                                 GOTO LOOP_2MS;                  //Ve para la etiqueta loop_1ms
+                      00551                         
+0107   0008           00552                                 RETURN;                                 //regresa de la subrutina
+                      00553 ;-------------------------------------------------------------------------------------------------------
+                            ---
+                      00554 
+Warning[205]: Found directive in column 1. (END)
+Warning[211]: Extraneous arguments on the line.
+                      00555 END                                                                             //FIN DEL PROGRAMA
+MPASM  5.30.01                    PRACTICA 3.ASM   4-18-2021  15:30:43         PAGE 15
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ACKDT                             00000005
+ACKEN                             00000004
+ACKSTAT                           00000006
+ACT_COL11                         00000001
+ACT_COL11YCOL15                   00000011
+ACT_COL12                         00000002
+ACT_COL12COL13COL14YCOL15         0000001E
+ACT_COL12YCOL14                   0000000A
+ACT_COL12YCOL3YCOL14              0000000E
+ACT_COL13                         00000004
+ACT_COL14                         00000008
+ACT_COL15                         00000010
+ADCON0                            0000001F
+ADCON1                            0000009F
+ADCS0                             00000006
+ADCS1                             00000007
+ADCS2                             00000006
+ADDEN                             00000003
+ADFM                              00000007
+ADIE                              00000006
+ADIF                              00000006
+ADON                              00000000
+ADRESH                            0000001E
+ADRESL                            0000009E
+ANIMACION                         00000038
+BANDERAS                          00000035
+BANDERA_CLEAR                     00000003
+BANDERA_D                         00000001
+BANDERA_TECLADO                   00000002
+BAN_INT                           00000000
+BCLIE                             00000003
+BCLIF                             00000003
+BF                                00000000
+BRGH                              00000002
+C                                 00000000
+C1INV                             00000004
+C1OUT                             00000006
+C2INV                             00000005
+C2OUT                             00000007
+CARA_COL11                        00000003
+CARA_COL12                        0000006D
+CARA_COL13                        0000006E
+CARA_COL14                        0000006D
+CARA_COL15                        00000003
+CARH1_COL11                       000000EF
+CARH1_COL12                       00000095
+CARH1_COL13                       000000E2
+CARH1_COL14                       00000095
+CARH1_COL15                       000000EF
+CARH2_COL11                       000000BB
+CARH2_COL12                       000000D5
+CARH2_COL13                       000000E2
+CARH2_COL14                       000000D5
+MPASM  5.30.01                    PRACTICA 3.ASM   4-18-2021  15:30:43         PAGE 16
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+CARH2_COL15                       000000BB
+CARL_COL11                        00000000
+CARL_COL12                        000000BF
+CARL_COL13                        000000BF
+CARL_COL14                        000000BF
+CARL_COL15                        000000BF
+CARM_COL11                        00000000
+CARM_COL12                        000000FD
+CARM_COL13                        000000F3
+CARM_COL14                        000000FD
+CARM_COL15                        00000000
+CARO_COL11                        000000C1
+CARO_COL12                        000000BE
+CARO_COL13                        000000BE
+CARO_COL14                        000000BE
+CARO_COL15                        000000C1
+CARR_COL11                        00000000
+CARR_COL12                        000000F6
+CARR_COL13                        000000E6
+CARR_COL14                        000000D6
+CARR_COL15                        000000B9
+CCP1CON                           00000017
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCP2CON                           0000001D
+CCP2IE                            00000000
+CCP2IF                            00000000
+CCP2M0                            00000000
+CCP2M1                            00000001
+CCP2M2                            00000002
+CCP2M3                            00000003
+CCP2X                             00000005
+CCP2Y                             00000004
+CCPR1H                            00000016
+CCPR1L                            00000015
+CCPR2H                            0000001C
+CCPR2L                            0000001B
+CHS0                              00000003
+CHS1                              00000004
+CHS2                              00000005
+CIS                               00000003
+CKE                               00000006
+CKP                               00000004
+CM0                               00000000
+CM1                               00000001
+CM2                               00000002
+CMCON                             0000009C
+MPASM  5.30.01                    PRACTICA 3.ASM   4-18-2021  15:30:43         PAGE 17
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+CMIE                              00000006
+CMIF                              00000006
+COL_1                             00000000
+COL_2                             00000001
+COL_3                             00000002
+COL_4                             00000003
+COL_5                             00000004
+CONT_MILIS                        00000036
+CONT_SEG                          00000037
+CREN                              00000004
+CSRC                              00000007
+CTA_DECHOR                        00000028
+CTA_DECMIN                        00000026
+CTA_DECSEG                        00000024
+CTA_UNIHOR                        00000027
+CTA_UNIMIN                        00000025
+CTA_UNISEG                        00000023
+CVR0                              00000000
+CVR1                              00000001
+CVR2                              00000002
+CVR3                              00000003
+CVRCON                            0000009D
+CVREN                             00000007
+CVROE                             00000006
+CVRR                              00000005
+D                                 00000005
+DATA_ADDRESS                      00000005
+DC                                00000001
+DES_COLUMNAS                      00000000
+D_A                               00000005
+EEADR                             0000010D
+EEADRH                            0000010F
+EECON1                            0000018C
+EECON2                            0000018D
+EEDATA                            0000010C
+EEDATH                            0000010E
+EEIE                              00000004
+EEIF                              00000004
+EEPGD                             00000007
+F                                 00000001
+FERR                              00000002
+FSR                               00000004
+GCEN                              00000007
+GIE                               00000007
+GO                                00000002
+GO_DONE                           00000002
+I2C_DATA                          00000005
+I2C_READ                          00000002
+I2C_START                         00000003
+I2C_STOP                          00000004
+IBF                               00000007
+IBOV                              00000005
+INDF                              00000000
+MPASM  5.30.01                    PRACTICA 3.ASM   4-18-2021  15:30:43         PAGE 18
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IRP                               00000007
+LOOP                              00000049
+LOOP_2MS                          00000103
+LOOP_A                            0000009F
+LOOP_ANIMACION                    000000C9
+LOOP_L                            000000B8
+LOOP_M                            0000004A
+LOOP_MU1                          000000CA
+LOOP_MU2                          000000E3
+LOOP_O                            00000066
+LOOP_R                            00000078
+NOT_A                             00000005
+NOT_ADDRESS                       00000005
+NOT_BO                            00000000
+NOT_BOR                           00000000
+NOT_DONE                          00000002
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_RC8                           00000006
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+NOT_TX8                           00000006
+NOT_W                             00000002
+NOT_WRITE                         00000002
+OBF                               00000006
+OERR                              00000001
+OPTION_REG                        00000081
+P                                 00000004
+PCFG0                             00000000
+PCFG1                             00000001
+PCFG2                             00000002
+PCFG3                             00000003
+PCL                               00000002
+PCLATH                            0000000A
+PCON                              0000008E
+PEIE                              00000006
+PEN                               00000002
+PIE1                              0000008C
+PIE2                              0000008D
+PIR1                              0000000C
+PIR2                              0000000D
+PORTA                             00000005
+PORTB                             00000006
+PORTC                             00000007
+PORTD                             00000008
+PORTE                             00000009
+PR2                               00000092
+PRESC_1                           00000033
+MPASM  5.30.01                    PRACTICA 3.ASM   4-18-2021  15:30:43         PAGE 19
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+PRESC_2                           00000034
+PROGA                             0000003F
+PROGB                             000000E0
+PROGC                             00000000
+PROGD                             000000FF
+PROGE                             00000007
+PROG_INI                          0000002C
+PROG_PRIN                         00000048
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+PSPIE                             00000007
+PSPIF                             00000007
+PSPMODE                           00000004
+R                                 00000002
+RBIE                              00000003
+RBIF                              00000000
+RC8_9                             00000006
+RC9                               00000006
+RCD8                              00000000
+RCEN                              00000003
+RCIE                              00000005
+RCIF                              00000005
+RCREG                             0000001A
+RCSTA                             00000018
+RD                                00000000
+READ_WRITE                        00000002
+REN_1                             00000000
+REN_2                             00000001
+REN_3                             00000002
+REN_4                             00000003
+REN_5                             00000004
+REN_6                             00000005
+REN_7                             00000006
+RES_FSR                           00000032
+RES_PCLATH                        00000031
+RES_STATUS                        00000030
+RES_W                             00000029
+RETARDO                           00000102
+RP0                               00000005
+RP1                               00000006
+RSEN                              00000001
+RUTINA_INT                        00000019
+RX9                               00000006
+RX9D                              00000000
+R_W                               00000002
+S                                 00000003
+SAL_INT                           0000000F
+SAL_RUTEXT                        00000029
+SAL_RUTINT                        0000002A
+SEN                               00000000
+SIG_INT                           00000020
+MPASM  5.30.01                    PRACTICA 3.ASM   4-18-2021  15:30:43         PAGE 20
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+SIN_BD4                           00000004
+SIN_BD5                           00000005
+SIN_BD6                           00000006
+SIN_BD7                           00000007
+SIN_USORA0                        00000000
+SIN_USORA1                        00000001
+SIN_USORA2                        00000002
+SIN_USORA3                        00000003
+SIN_USORA4                        00000004
+SIN_USORA5                        00000005
+SIN_USORB5                        00000005
+SIN_USORB6                        00000006
+SIN_USORB7                        00000007
+SIN_USORC7                        00000007
+SIN_USORD0                        00000000
+SIN_USORD1                        00000001
+SIN_USORD2                        00000002
+SIN_USORD3                        00000003
+SIN_USORD4                        00000004
+SIN_USORD5                        00000005
+SIN_USORD6                        00000006
+SIN_USORD7                        00000007
+SIN_USORE0                        00000000
+SIN_USORE1                        00000001
+SIN_USORE2                        00000002
+SMP                               00000007
+SPBRG                             00000099
+SPEN                              00000007
+SREN                              00000005
+SSPADD                            00000093
+SSPBUF                            00000013
+SSPCON                            00000014
+SSPCON2                           00000091
+SSPEN                             00000005
+SSPIE                             00000003
+SSPIF                             00000003
+SSPM0                             00000000
+SSPM1                             00000001
+SSPM2                             00000002
+SSPM3                             00000003
+SSPOV                             00000006
+SSPSTAT                           00000094
+STATUS                            00000003
+SYNC                              00000004
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000010
+T1INSYNC                          00000002
+T1OSCEN                           00000003
+MPASM  5.30.01                    PRACTICA 3.ASM   4-18-2021  15:30:43         PAGE 21
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+T1SYNC                            00000002
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000012
+TMR0                              00000001
+TMR0IE                            00000005
+TMR0IF                            00000002
+TMR1CS                            00000001
+TMR1H                             0000000F
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2ON                            00000002
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000085
+TRISB                             00000086
+TRISC                             00000087
+TRISD                             00000088
+TRISE                             00000089
+TRISE0                            00000000
+TRISE1                            00000001
+TRISE2                            00000002
+TRMT                              00000001
+TX8_9                             00000006
+TX9                               00000006
+TX9D                              00000000
+TXD8                              00000000
+TXEN                              00000005
+TXIE                              00000004
+TXIF                              00000004
+TXREG                             00000019
+TXSTA                             00000098
+UA                                00000001
+VEC_INT                           00000004
+VEC_RESET                         00000000
+W                                 00000000
+WCOL                              00000007
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+Z                                 00000002
+_BODEN_OFF                        00003FBF
+_BODEN_ON                         00003FFF
+_CPD_OFF                          00003FFF
+_CPD_ON                           00003EFF
+_CP_ALL                           00001FFF
+MPASM  5.30.01                    PRACTICA 3.ASM   4-18-2021  15:30:43         PAGE 22
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_CP_OFF                           00003FFF
+_DEBUG_OFF                        00003FFF
+_DEBUG_ON                         000037FF
+_HS_OSC                           00003FFE
+_LP_OSC                           00003FFC
+_LVP_OFF                          00003F7F
+_LVP_ON                           00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FF7
+_RC_OSC                           00003FFF
+_WDT_OFF                          00003FFB
+_WDT_ON                           00003FFF
+_WRT_1FOURTH                      00003BFF
+_WRT_256                          00003DFF
+_WRT_HALF                         000039FF
+_WRT_OFF                          00003FFF
+_XT_OSC                           00003FFD
+__16F877A                         00000001
+__DEBUG                           1
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : XX--XXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0040 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0080 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+00C0 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0100 : XXXXXXXX-------- ---------------- ---------------- ----------------
+2000 : -------X-------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:   262
+Program Memory Words Free:  7930
+
+
+Errors   :     0
+Warnings :     4 reported,     0 suppressed
+Messages :     0 reported,     0 suppressed
+
+

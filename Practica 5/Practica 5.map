@@ -1,0 +1,176 @@
+MPLINK 4.30.01, Linker
+Linker Map File - Created Tue May 25 09:29:13 2021
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x000004
+                   .org_2       code   0x000004    program   0x000986
+.config_2007_PRACTICA 5.O       code   0x002007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000001      
+                            0x000004    0x0004c6      
+                            0x002007    0x002007      
+            1222 out of 8456 program addresses used, program memory utilization is 14%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+            BARRE_TECLADO   0x000278    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+            CONVHEX_ASCII   0x000326    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+               ESPERA_2MS   0x0004aa    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+               ESPERA_4MS   0x0004b6    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                ESPERA_5S   0x0004bc    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_0   0x000367    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_1   0x00036a    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_2   0x00036d    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_3   0x000370    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_4   0x000373    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_5   0x000376    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_6   0x000379    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_7   0x00037c    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_8   0x00037f    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_9   0x000382    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_A   0x000385    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_B   0x000388    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_C   0x00038b    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_D   0x00038e    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_E   0x000391    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_F   0x000394    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TEC0   0x0002e6    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TEC1   0x0002e9    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+              FUE_TEC1AUX   0x0000b8    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TEC2   0x0002ec    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+              FUE_TEC2AUX   0x000174    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TEC3   0x0002ef    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+              FUE_TEC3AUX   0x00006a    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TEC4   0x0002f2    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TEC5   0x0002f5    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TEC6   0x0002f8    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TEC7   0x0002fb    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TEC8   0x0002fe    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TEC9   0x000301    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TECA   0x000304    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TECB   0x000307    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TECC   0x00030a    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+             FUE_TECCLEAR   0x000313    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TECD   0x00030d    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+              FUE_TECGATO   0x000310    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                  INI_LCD   0x000317    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                  LOOPSEG   0x0004bc    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                LOOP_1ERA   0x000168    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 LOOP_1MS   0x00049f    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 LOOP_250   0x0004b1    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 LOOP_2DA   0x000209    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                  LOOP_2M   0x0004ab    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                   LOOP_4   0x0004b7    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                LOOP_40MS   0x0004a5    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 LOOP_INT   0x0004be    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+         MUESTRA_CARACTER   0x000397    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 PROG_INI   0x00002b    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                PROG_PRIN   0x000068    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+             PULSO_ENABLE   0x000499    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                RENGLON_2   0x000293    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                RENGLON_3   0x0002ae    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+               RENGLON_3A   0x0000a1    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                RENGLON_4   0x0002c9    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+              RETARDO_1MS   0x00049e    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+            RETARDO_250MS   0x0004b0    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+             RETARDO_40MS   0x0004a4    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+               RUTINA_INT   0x000019    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+         SAL_BARRETECLADO   0x000316    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+        SAL_CONVHEX_ASCII   0x000396    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                  SAL_INT   0x00000f    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+               SAL_RUTEXT   0x000028    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+               SAL_RUTINT   0x000029    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                  SIG_INT   0x000020    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                   SWITCH   0x0000ac    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                  VEC_INT   0x000004    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                VEC_RESET   0x000000    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                VEC_RESET   0x000000    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                  VEC_INT   0x000004    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                  SAL_INT   0x00000f    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+               RUTINA_INT   0x000019    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                  SIG_INT   0x000020    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+               SAL_RUTEXT   0x000028    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+               SAL_RUTINT   0x000029    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 PROG_INI   0x00002b    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                PROG_PRIN   0x000068    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+              FUE_TEC3AUX   0x00006a    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+               RENGLON_3A   0x0000a1    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                   SWITCH   0x0000ac    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+              FUE_TEC1AUX   0x0000b8    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                LOOP_1ERA   0x000168    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+              FUE_TEC2AUX   0x000174    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 LOOP_2DA   0x000209    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+            BARRE_TECLADO   0x000278    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                RENGLON_2   0x000293    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                RENGLON_3   0x0002ae    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                RENGLON_4   0x0002c9    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TEC0   0x0002e6    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TEC1   0x0002e9    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TEC2   0x0002ec    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TEC3   0x0002ef    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TEC4   0x0002f2    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TEC5   0x0002f5    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TEC6   0x0002f8    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TEC7   0x0002fb    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TEC8   0x0002fe    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TEC9   0x000301    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TECA   0x000304    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TECB   0x000307    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TECC   0x00030a    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 FUE_TECD   0x00030d    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+              FUE_TECGATO   0x000310    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+             FUE_TECCLEAR   0x000313    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+         SAL_BARRETECLADO   0x000316    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                  INI_LCD   0x000317    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+            CONVHEX_ASCII   0x000326    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_0   0x000367    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_1   0x00036a    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_2   0x00036d    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_3   0x000370    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_4   0x000373    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_5   0x000376    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_6   0x000379    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_7   0x00037c    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_8   0x00037f    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_9   0x000382    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_A   0x000385    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_B   0x000388    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_C   0x00038b    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_D   0x00038e    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_E   0x000391    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                    FUE_F   0x000394    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+        SAL_CONVHEX_ASCII   0x000396    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+         MUESTRA_CARACTER   0x000397    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+             PULSO_ENABLE   0x000499    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+              RETARDO_1MS   0x00049e    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 LOOP_1MS   0x00049f    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+             RETARDO_40MS   0x0004a4    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                LOOP_40MS   0x0004a5    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+               ESPERA_2MS   0x0004aa    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                  LOOP_2M   0x0004ab    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+            RETARDO_250MS   0x0004b0    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 LOOP_250   0x0004b1    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+               ESPERA_4MS   0x0004b6    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                   LOOP_4   0x0004b7    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                  LOOPSEG   0x0004bc    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                ESPERA_5S   0x0004bc    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+                 LOOP_INT   0x0004be    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\Practica 5\Practica 5.asm
+
+

@@ -1,0 +1,100 @@
+MPLINK 4.30.01, Linker
+Linker Map File - Created Thu May 27 01:09:50 2021
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x000004
+                   .org_2       code   0x000004    program   0x000324
+.config_2007_CODIGO FUENTE.O       code   0x002007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000001      
+                            0x000004    0x000195      
+                            0x002007    0x002007      
+            405 out of 8456 program addresses used, program memory utilization is 4%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                    ADIOS   0x0000e6    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                    CORRE   0x0000e7    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                  INI_LCD   0x00005a    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                   LLUVIA   0x0000d8    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                 LOOP_1MS   0x00017f    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                LOOP_30MS   0x000191    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                LOOP_40MS   0x000185    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                LOOP_50MS   0x00018b    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+             LOOP_DERECHA   0x0000bf    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+           LOOP_IZQUIERDA   0x0000a4    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                LOOP_PRIN   0x000093    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+              LOOP_SERIAL   0x000088    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+         MUESTRA_CARACTER   0x000100    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                MUEVE_DER   0x0000bd    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                MUEVE_IZQ   0x0000a2    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                 PROG_INI   0x00002b    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                PROG_PRIN   0x00006c    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+             PULSO_ENABLE   0x000179    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                   REPITE   0x0000ea    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+              RETARDO_1MS   0x00017e    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+             RETARDO_40MS   0x000184    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+            RETARDO_MOTOR   0x00018a    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+           RETARDO_MOTORC   0x000190    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+               RUTINA_INT   0x000019    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                   SALINT   0x0000ff    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                  SAL_INT   0x00000f    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+               SAL_RUTEXT   0x000028    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+               SAL_RUTINT   0x000029    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                  SIG_INT   0x000020    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+             TRABATE_LOCO   0x0000df    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                  VEC_INT   0x000004    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                VEC_RESET   0x000000    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                VER_AGAIN   0x0000a0    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                VEC_RESET   0x000000    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                  VEC_INT   0x000004    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                  SAL_INT   0x00000f    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+               RUTINA_INT   0x000019    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                  SIG_INT   0x000020    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+               SAL_RUTEXT   0x000028    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+               SAL_RUTINT   0x000029    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                 PROG_INI   0x00002b    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                  INI_LCD   0x00005a    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                PROG_PRIN   0x00006c    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+              LOOP_SERIAL   0x000088    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                LOOP_PRIN   0x000093    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                VER_AGAIN   0x0000a0    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                MUEVE_IZQ   0x0000a2    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+           LOOP_IZQUIERDA   0x0000a4    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                MUEVE_DER   0x0000bd    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+             LOOP_DERECHA   0x0000bf    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                   LLUVIA   0x0000d8    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+             TRABATE_LOCO   0x0000df    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                    ADIOS   0x0000e6    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                    CORRE   0x0000e7    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                   REPITE   0x0000ea    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                   SALINT   0x0000ff    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+         MUESTRA_CARACTER   0x000100    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+             PULSO_ENABLE   0x000179    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+              RETARDO_1MS   0x00017e    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                 LOOP_1MS   0x00017f    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+             RETARDO_40MS   0x000184    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                LOOP_40MS   0x000185    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+            RETARDO_MOTOR   0x00018a    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                LOOP_50MS   0x00018b    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+           RETARDO_MOTORC   0x000190    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+                LOOP_30MS   0x000191    program     static C:\Users\anton\Desktop\Sistemas digitales\Microelectronica Programable\PA chingon\Codigo fuente.asm
+
+
